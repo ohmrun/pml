@@ -1,4 +1,4 @@
-package pml.pack;
+package eu.ohmrun.pml;
 
 enum AtomDef{//Data, Eq, Show, Typeable)
   UnboundSym(s:Symbol);
@@ -7,7 +7,7 @@ enum AtomDef{//Data, Eq, Show, Typeable)
   Str(str:String);
   Nul;
 } 
-@:using(pml.pack.Atom.AtomLift)
+@:using(eu.ohmrun.pml.Atom.AtomLift)
 abstract Atom(AtomDef) from AtomDef to AtomDef{
   static public var _(default,never) = AtomLift;
   public function new(self) this = self;

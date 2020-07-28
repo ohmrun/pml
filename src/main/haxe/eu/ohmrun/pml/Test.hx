@@ -1,4 +1,4 @@
-package pml;
+package eu.ohmrun.pml;
 
 
 import stx.parse.pml.Lexer;

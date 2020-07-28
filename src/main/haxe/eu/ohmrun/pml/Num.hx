@@ -1,4 +1,4 @@
-package pml.pack;
+package eu.ohmrun.pml;
 
 enum Num{
   KLFloat(fl:Float);

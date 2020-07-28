@@ -1,3 +1,3 @@
-package pml.pack;
+package eu.ohmrun.pml;
 
 typedef Symbol    = String;

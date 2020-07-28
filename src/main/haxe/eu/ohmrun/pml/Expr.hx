@@ -1,4 +1,4 @@
-package pml.pack;
+package eu.ohmrun.pml;
 
 enum ExprDef<T>{
   Label(name:String);
@@ -7,7 +7,7 @@ enum ExprDef<T>{
   Empty;
   //Flect
 }
-@:using(pml.pack.Expr.ExprLift)
+@:using(eu.ohmrun.pml.Expr.ExprLift)
 abstract Expr<T>(ExprDef<T>) from ExprDef<T> to ExprDef<T>{
   static public var _(default,never) = ExprLift;
   public function new(self) this = self;
