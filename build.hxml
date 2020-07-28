@@ -1,7 +1,22 @@
 -lib stx_nano
 -lib stx_pico
 -lib stx_parse
+-lib stx_asys
+-lib stx_ds
+-lib stx_log
+-lib stx_ext
+-lib stx_async
 -cp src/main/haxe
 -D analyzer-optimize
+-D errorStack
 -main Main
---interp
+#--interp
+-resource asset/test.pml@test
+-resource asset/test-2.pml@test2
+-resource asset/haxe_cpl.pml@haxe_cpl
+#--jvm bin/main.jar
+#--js bin/main.js
+#--neko bin/main.n
+#--cmd neko bin/main.n
+--js bin/main.js
+--cmd node bin/main.js

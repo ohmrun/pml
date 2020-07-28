@@ -1,0 +1,24 @@
+{
+    "name": "pml",
+    "license": "MIT",
+    "tags": [
+        "cross",
+        "functional"
+    ],
+    "description": "Parenthetical Markup Language, aka lisp with no lambdas",
+    "contributors": [
+        "0b1kn00b"
+    ],
+    "releasenote": "simple simple",
+    "version": "0.1.0",
+    "url": "https://github.com/0b1kn00b/stx_pointwise",
+    "dependencies": {
+        "hx3compat": "",
+        "stx_pico": "",
+        "stx_nano": "",
+        "stx_parse":"",
+        "stx_ds"    : "",
+        "stx_arrowlet" : ""
+    },
+    "classPath": "src/main/haxe"
+}
