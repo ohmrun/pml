@@ -1,7 +1,7 @@
 package eu.ohmrun.pml;
 
 enum AtomDef{//Data, Eq, Show, Typeable)
-  UnboundSym(s:Symbol);
+  AnSym(s:Symbol);
   B(b:Bool);
   N(fl:Num);
   Str(str:String);
@@ -22,7 +22,7 @@ abstract Atom(AtomDef) from AtomDef to AtomDef{
 class AtomLift{
   static public function toString(self:Atom){
     return switch(self){
-      case UnboundSym(s)      : '\\$${s}';
+      case AnSym(s)      : '\\$${s}';
       case B(b)               : Std.string(b);
       case N(fl)              : Std.string(fl);
       case Str(str)           : '"$str"';

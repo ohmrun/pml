@@ -25,7 +25,7 @@ class Lexer{
       
   static public var k_atom        = "[^ \r\t\n\\(\\)]+".regexParser()
     .then(
-      (x:String) -> TAtom(UnboundSym((x:Symbol)))
+      (x:String) -> TAtom(AnSym((x:Symbol)))
     );
   static public var main : Parser<String,Array<Token>> = (
     whitespace.many()._and(

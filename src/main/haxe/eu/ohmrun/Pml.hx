@@ -11,7 +11,7 @@ typedef Atom          = eu.ohmrun.pml.Atom;
 class AtomLift{
   static public function toString(atom:Atom){
     return switch atom {
-      case UnboundSym(s)  : '$s';
+      case AnSym(s)  : '$s';
       case B(b)           : '$b';
       case N(fl)          : '$fl';
       case Str(str)       : str;
