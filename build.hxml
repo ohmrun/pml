@@ -6,7 +6,11 @@
 -lib stx_log
 -lib stx_ext
 -lib stx_async
+-lib stx_assert
+
+
 -cp src/main/haxe
+-D no-deprecation-warnings
 -D analyzer-optimize
 -D errorStack
 -main Main

@@ -105,4 +105,13 @@ class ExprLift{
       case Empty            : Empty;
     }
   }
+  static public function eq<T>(inner:Eq<T>):Eq<Expr<T>>{
+    return new stx.assert.eq.term.Expr(inner);
+  }
+  static public function lt<T>(inner:Ord<T>):Ord<Expr<T>>{
+    return new stx.assert.ord.term.Expr(inner);
+  }
+  static public function comparable<T>(inner:Comparable<T>):Comparable<Expr<T>>{
+    return new stx.assert.comparable.term.Expr(inner);
+  }
 }

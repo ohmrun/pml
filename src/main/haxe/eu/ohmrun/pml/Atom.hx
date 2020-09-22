@@ -22,11 +22,11 @@ abstract Atom(AtomDef) from AtomDef to AtomDef{
 class AtomLift{
   static public function toString(self:Atom){
     return switch(self){
-      case AnSym(s)      : '\\$${s}';
+      case AnSym(s)           : '${s}';
       case B(b)               : Std.string(b);
       case N(fl)              : Std.string(fl);
-      case Str(str)           : '"$str"';
-      case Nul                : 'nul';
+      case Str(str)           : '$str';
+      case Nul                : '';
     }
   }
 }

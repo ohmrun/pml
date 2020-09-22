@@ -18,6 +18,7 @@
         "stx_nano": "",
         "stx_parse":"",
         "stx_ds"    : "",
+        "stx_ext"   : "",
         "stx_arrowlet" : ""
     },
     "classPath": "src/main/haxe"
