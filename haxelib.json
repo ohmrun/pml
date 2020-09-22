@@ -19,7 +19,7 @@
         "stx_parse":"",
         "stx_ds"    : "",
         "stx_ext"   : "",
-        "stx_arrowlet" : ""
+        "stx_arw" : ""
     },
     "classPath": "src/main/haxe"
 }
