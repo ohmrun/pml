@@ -13,32 +13,33 @@ abstract Expr<T>(ExprDef<T>) from ExprDef<T> to ExprDef<T>{
   public function new(self) this = self;
 
   @:noUsing static public function parse(str:String){
-    //var timer = __.timer();
-    trace('lex expr:');
+    var timer = __.timer();
+    //trace('lex expr:');
     var p = new stx.parse.pml.Parser();
     var l = stx.parse.pml.Lexer;
     
     var reader  = str.reader();
     return l.main.toArrowlet().toCascade().reclaim(
       (tkns:ParseResult<String,Array<Token>>) -> {
-        //trace('lex expr: ${timer.since()}');
+        __.log().debug('lex expr: ${timer.since()}');
+        timer = timer.start();
         return tkns.fold(
           (arr)               -> {
             var reader : Input<Token> = arr.with.defv([]).reader();
-            return p.main().forward(reader).toProceed().process(
+            return p.main().forward(reader).toProduce().convert(
               __.passthrough(
                 (_) -> {
-                  //trace(timer.since());
+                  __.log().debug('parse expr: ${timer.since()}');
                 }
               )
             );
           },
           (err)   -> {
-            return Proceed.pure(ParseFailure.at_with([].reader(),'fail').toParseResult());
+            return Produce.pure(ParseFailure.at_with([].reader(),'fail').toParseResult());
           }
         );
       }
-    ).forward(reader);
+    ).provide(reader);
   }
   @:noUsing static public function lift<T>(self:ExprDef<T>):Expr<T> return new Expr(self);
 

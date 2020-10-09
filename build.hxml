@@ -1,12 +1,12 @@
 -lib stx_nano
--lib stx_pico
+-lib stx_pico:1.0.0
 -lib stx_parse
 -lib stx_asys
 -lib stx_ds
--lib stx_log
+-lib stx_log:0.1.4
 -lib stx_ext
--lib stx_async
--lib stx_assert
+-lib stx_async:1.0.1
+-lib stx_assert:0.1.0
 
 
 -cp src/main/haxe

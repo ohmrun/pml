@@ -1,2 +1,4 @@
 bin
 test.js
+isolate-*
+processed*.txt

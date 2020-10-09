@@ -1,6 +1,9 @@
 package eu.ohmrun;
 
 class Pml{
+  static public function log(wildcard:stx.nano.Wildcard){
+    return new stx.Log().tag("eu.ohmrun.pml");
+  }
   @:noUsing static public function parse(string:String){
     return Expr.parse(string);
   }
