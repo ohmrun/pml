@@ -9,4 +9,5 @@ using eu.ohmrun.Fletcher;
 using stx.Assert;
 
 using eu.ohmrun.Pml;
+using eu.ohmrun.pml.Logging;
 
