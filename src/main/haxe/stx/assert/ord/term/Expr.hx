@@ -7,18 +7,18 @@ class Expr<T> implements OrdApi<ExprT<T>>{
   public function new(inner){
     this.inner = inner;
   }
-  public function applyII(lhs:ExprT<T>,rhs:ExprT<T>){
+  public function comply(lhs:ExprT<T>,rhs:ExprT<T>){
     return switch([lhs,rhs]){
-      case [Label(lhs),Label(rhs)]        : Ord.String().applyII(lhs,rhs);
+      case [Label(lhs),Label(rhs)]        : Ord.String().comply(lhs,rhs);
       case [Group(lhs),Group(rhs)]        : 
         lhs.zip(rhs.toIterable()).lfold(
           (tp:Couple<ExprT<T>,ExprT<T>>,m:Ordered) -> switch(m){
             case LessThan : LessThan;
-            default       : applyII(tp.fst(),tp.snd());
+            default       : comply(tp.fst(),tp.snd());
           },
           NotLessThan
         );
-      case [Value(lhs),Value(rhs)]      : inner.applyII(lhs,rhs);
+      case [Value(lhs),Value(rhs)]      : inner.comply(lhs,rhs);
       case [Empty,Empty]                : NotLessThan;
       case [null, null]                 : NotLessThan;
       case [null,_]                     : LessThan;

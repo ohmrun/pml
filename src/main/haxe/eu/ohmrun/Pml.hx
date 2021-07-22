@@ -1,13 +1,13 @@
 package eu.ohmrun;
 
+using stx.Nano;
 class Pml{
-  static public function log(wildcard:stx.nano.Wildcard){
-    return new stx.Log().tag("eu.ohmrun.pml");
-  }
+  //#end
   @:noUsing static public function parse(string:String){
     return Expr.parse(string);
   }
 }
+typedef Lexer         = stx.parse.pml.Lexer;
 
 typedef AtomDef       = eu.ohmrun.pml.Atom.AtomDef;
 typedef Atom          = eu.ohmrun.pml.Atom;
@@ -16,7 +16,7 @@ class AtomLift{
     return switch atom {
       case AnSym(s)  : '$s';
       case B(b)           : '$b';
-      case N(fl)          : '$fl';
+      case N(fl)           : '$fl';
       case Str(str)       : str;
       case Nul            : '<null>';
     }

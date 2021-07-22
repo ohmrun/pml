@@ -1,5 +1,10 @@
 package stx.parse.pml;
 
+using stx.parse.pml.Lexer;
+
+inline function id(string) return __.parse().id(string);
+inline function reg(string) return __.parse().reg(string);
+
 class Lexer{
   static public var tl_paren      = "(".id().then((_) -> TLParen);
   static public var tr_paren      = ")".id().then((_) -> TRParen);
@@ -8,7 +13,7 @@ class Lexer{
   static public function float(str:String){
     return TAtom(N(KLFloat(Std.parseFloat(str))));
   }
-  static public var k_float               = "\\\\-?[0-9]+(\\\\.[0-9]+)?".regexParser().then(float);
+  static public var k_float               = "\\\\-?[0-9]+(\\\\.[0-9]+)?".reg().then(float);
   static public var k_number              = k_float;
 
   static function between(current:String){
@@ -18,17 +23,17 @@ class Lexer{
     .then(
       (x) -> TAtom(Str(x))
     );
-  static public var k_bool        = '\\(true|false\\)'.regexParser()
+  static public var k_bool        = '\\(true|false\\)'.reg()
     .then(
       (x) -> TAtom(B(x == "true" ? true : false))
     );
       
-  static public var k_atom        = "[^ \r\t\n\\(\\)]+".regexParser()
+  static public var k_atom        = "[^ \r\t\n\\(\\)]+".reg()
     .then(
       (x:String) -> TAtom(AnSym((x:Symbol)))
     );
   static public var main : Parser<String,Array<Token>> = (
-    whitespace.many()._and(
+    Parser.Inspect(whitespace.many())._and(
       [
         tl_paren,
         tr_paren,
@@ -38,7 +43,7 @@ class Lexer{
         k_atom,
       ].ors()
       ).one_many()
-       .and_(Parse.eof())
+       .and_(Parser.Eof())
   );
     static function print_ipt(ipt){
       trace(ipt);

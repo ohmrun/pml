@@ -1,6 +1,6 @@
 package stx.parse.pml;
 
-import stx.parse.pack.Parser in Prs;
+import stx.parse.Parser in Prs;
 
 class Parser{
   public function new(){}
@@ -11,7 +11,7 @@ class Parser{
     return Parse.eq(TRParen);
   }
   public function val(){
-    return Parse.filter(
+    return stx.parse.Parser.Choose(
       (t:Token) -> switch(t){
         case TAtom(atm) : Some(Value(atm));
         case null       : None;
