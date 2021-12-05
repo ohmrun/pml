@@ -7,7 +7,7 @@ class LexerTest extends TestCase{
     var result = parser.provide(reader).fudge();
     trace(result);
   }
-  @:timeout(60000)
+  @:timeout(120000)
   public function test_main_2(async:Async){
     var t      = Timer.unit();
     var reader = __.resource("haxe_cpl").string().reader();
@@ -19,11 +19,12 @@ class LexerTest extends TestCase{
         async.done();
       }
     ).crunch();
+    async.done();
   }
   public function _test_haxe(){
     var reader = __.resource("haxe_cpl").string();
     var parser = Expr.parse(reader);
-    var result = parser.fudge().value();
+    var result = parser.fudge().value;
     trace(result);
   }
 }

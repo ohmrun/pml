@@ -23,9 +23,9 @@ abstract Expr<T>(ExprDef<T>) from ExprDef<T> to ExprDef<T>{
       (tkns:ParseResult<String,Array<Token>>) -> {
         __.log().debug('lex expr: ${timer.since()}');
         timer = timer.start();
-        return tkns.fold(
-          (arr)               -> {
-            var reader : ParseInput<Token> = arr.with.defv([]).reader();
+        return tkns.is_ok().if_else(
+          ()               -> {
+            var reader : ParseInput<Token> = tkns.value.defv([]).reader();
             return p.main().provide(reader).toProduce().convert(
               __.passthrough(
                 (_) -> {
@@ -34,7 +34,7 @@ abstract Expr<T>(ExprDef<T>) from ExprDef<T> to ExprDef<T>{
               )
             );
           },
-          (err)   -> {
+          () -> {
             return Produce.pure([].reader().fail('fail'));
           }
         );
