@@ -1,0 +1,19 @@
+{
+  "build" : {
+    "-D"    : ["no-deprecation-warnings","stx.log.null`"],
+    "-cp"   : ["src/main/haxe"],
+    "-L"    : ["tink_core","stx_pico","stx_nano","stx_fn","stx_fp","stx_log","stx_test","stx_pkg","stx_assert","stx_parse","stx_ds","fletcher"],
+    "main"  : {
+      "-main"     : "Main",
+      "interp"  : {
+        "--interp"  : true
+      }
+    },
+    "-resource" : [
+      "asset/test.pml@test",
+      "asset/test2@testw",
+      "asset/test-2.pml@test2",
+      "asset/haxe_cpl.pml@haxe_cpl"
+    ]
+  }
+}
