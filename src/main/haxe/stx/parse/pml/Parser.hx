@@ -11,7 +11,7 @@ class Parser{
     return Parse.eq(TRParen);
   }
   public function val(){
-    return stx.parse.Parser.Choose(
+    return stx.parse.Parsers.Choose(
       (t:Token) -> switch(t){
         case TAtom(atm) : Some(Value(atm));
         case null       : None;

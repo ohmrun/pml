@@ -19,7 +19,7 @@ abstract Expr<T>(ExprDef<T>) from ExprDef<T> to ExprDef<T>{
     var l = stx.parse.pml.Lexer;
     
     var reader  = str.reader();
-    return Cascade.fromFletcher(l.main.toFletcher()).reclaim(
+    return Modulate.fromFletcher(l.main.toFletcher()).reclaim(
       (tkns:ParseResult<String,Array<Token>>) -> {
         __.log().debug('lex expr: ${timer.since()}');
         timer = timer.start();
@@ -39,7 +39,7 @@ abstract Expr<T>(ExprDef<T>) from ExprDef<T> to ExprDef<T>{
           }
         );
       }
-    ).provide(reader);
+    ).produce(__.accept(reader));
   }
   @:noUsing static public function lift<T>(self:ExprDef<T>):Expr<T> return new Expr(self);
 

@@ -33,7 +33,7 @@ class Lexer{
       (x:String) -> TAtom(AnSym((x:Symbol)))
     );
   static public var main : Parser<String,Array<Token>> = (
-    Parser.Inspect(whitespace.many())._and(
+    Parsers.Inspect(whitespace.many())._and(
       [
         tl_paren,
         tr_paren,
@@ -43,7 +43,7 @@ class Lexer{
         k_atom,
       ].ors()
       ).one_many()
-       .and_(Parser.Eof())
+       .and_(Parsers.Eof())
   );
     static function print_ipt(ipt){
       trace(ipt);
