@@ -20,7 +20,7 @@ abstract Expr<T>(ExprDef<T>) from ExprDef<T> to ExprDef<T>{
     
     var reader  = str.reader();
     return Modulate.fromFletcher(l.main.toFletcher()).reclaim(
-      (tkns:ParseResult<String,Array<Token>>) -> {
+      (tkns:ParseResult<String,Cluster<Token>>) -> {
         __.log().debug('lex expr: ${timer.since()}');
         timer = timer.start();
         return tkns.is_ok().if_else(
@@ -80,11 +80,11 @@ abstract Expr<T>(ExprDef<T>) from ExprDef<T> to ExprDef<T>{
       }
     })(this);
   }
-  public function data_only():Option<Array<T>>{
+  public function data_only():Option<Cluster<T>>{
     return switch(this){
       case Group(xs) : 
         xs.lfold(
-          (n,m:Option<Array<T>>) -> switch(m){
+          (n,m:Option<Cluster<T>>) -> switch(m){
             case Some(arr) : switch(n){
               case Value(value) : Some(arr.snoc(value));
               default           : None;

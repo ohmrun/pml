@@ -19,7 +19,7 @@ class Parser{
       }
     );
   }
-  function engroup(arr:Array<Expr<Atom>>){
+  function engroup(arr:Cluster<Expr<Atom>>){
     return Group(arr.toLinkedList());
   }
   public function main():Prs<Token,Expr<Atom>>{
@@ -34,9 +34,9 @@ class Parser{
   public function list_p():Prs<Token,Expr<Atom>>{
     return bracketed(expr_p.defer().many());
   }
-  private function bracketed(p:Prs<Token,Array<Expr<Atom>>>):Prs<Token,Expr<Atom>>{
+  private function bracketed(p:Prs<Token,Cluster<Expr<Atom>>>):Prs<Token,Expr<Atom>>{
     return lparen_p()._and(p).and_(rparen_p()).then(
-      (arr:Array<Expr<Atom>>) -> {
+      (arr:Cluster<Expr<Atom>>) -> {
         return Group(arr.toLinkedList());
       }
     );

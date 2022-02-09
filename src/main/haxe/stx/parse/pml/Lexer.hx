@@ -32,7 +32,7 @@ class Lexer{
     .then(
       (x:String) -> TAtom(AnSym((x:Symbol)))
     );
-  static public var main : Parser<String,Array<Token>> = (
+  static public var main : Parser<String,Cluster<Token>> = (
     Parsers.Inspect(whitespace.many())._and(
       [
         tl_paren,
