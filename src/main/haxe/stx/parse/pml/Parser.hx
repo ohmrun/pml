@@ -5,10 +5,10 @@ import stx.parse.Parser in Prs;
 class Parser{
   public function new(){}
   public function lparen_p(){
-    return Parse.eq(TLParen);
+    return Parse.eq(TLParen).tagged('lparen');
   }
   public function rparen_p(){
-    return Parse.eq(TRParen);
+    return Parse.eq(TRParen).tagged('rparen');
   }
   public function val(){
     return stx.parse.Parsers.Choose(
@@ -17,7 +17,7 @@ class Parser{
         case null       : None;
         default         : None;
       }
-    );
+    ).tagged('val');
   }
   function engroup(arr:Cluster<Expr<Atom>>){
     return Group(arr.toLinkedList());
@@ -29,10 +29,10 @@ class Parser{
     return [
       val(),
       list_p()
-    ].ors();
+    ].ors().tagged("expr");
   }
   public function list_p():Prs<Token,Expr<Atom>>{
-    return bracketed(expr_p.defer().many());
+    return bracketed(expr_p.defer().tagged('expr').many().tagged('exprs')).tagged('list');
   }
   private function bracketed(p:Prs<Token,Cluster<Expr<Atom>>>):Prs<Token,Expr<Atom>>{
     return lparen_p()._and(p).and_(rparen_p()).then(

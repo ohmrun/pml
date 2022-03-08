@@ -12,7 +12,7 @@ abstract Expr<T>(ExprDef<T>) from ExprDef<T> to ExprDef<T>{
   static public var _(default,never) = ExprLift;
   public function new(self) this = self;
 
-  @:noUsing static public function parse(str:String){
+  @:noUsing static public function parse(str:String):Produce<ParseResult<Token,Expr<Atom>>,Noise>{
     var timer = Timer.unit();
     __.log().debug('lex');
     var p = new stx.parse.pml.Parser();
@@ -23,6 +23,7 @@ abstract Expr<T>(ExprDef<T>) from ExprDef<T> to ExprDef<T>{
       (tkns:ParseResult<String,Cluster<Token>>) -> {
         __.log().debug('lex expr: ${timer.since()}');
         timer = timer.start();
+        __.log().trace('${tkns}');
         return tkns.is_ok().if_else(
           ()               -> {
             var reader : ParseInput<Token> = tkns.value.defv([]).reader();
@@ -35,7 +36,7 @@ abstract Expr<T>(ExprDef<T>) from ExprDef<T> to ExprDef<T>{
             );
           },
           () -> {
-            return Produce.pure([].reader().fail('fail'));
+            return Produce.pure(ParseResult.make([].reader(),null,tkns.error));
           }
         );
       }
