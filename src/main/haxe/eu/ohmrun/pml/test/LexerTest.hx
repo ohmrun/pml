@@ -1,13 +1,13 @@
 package eu.ohmrun.pml.test;
 
 class LexerTest extends TestCase{
-  public function _test_main(){
+  public function test_main(){
     var reader = "(s)".reader();
     var parser = Lexer.main;
     var result = parser.provide(reader).fudge();
     trace(result);
   }
-  @:timeout(120000)
+  //@timeout(120000)
   public function test_main_2(async:Async){
     var t      = Timer.unit();
     var reader = __.resource("haxe_cpl").string().reader();
@@ -18,8 +18,8 @@ class LexerTest extends TestCase{
         trace(t.since());
         async.done();
       }
-    ).crunch();
-    async.done();
+    ).submit();
+    //async.done();
   }
   public function _test_haxe(){
     var reader = __.resource("haxe_cpl").string();

@@ -1,0 +1,5 @@
+(hx.Compiler  
+  (lib      "stx_pico" "")
+  (lib      "stx_nano" "")
+)
+(hx.Pml "./test/")

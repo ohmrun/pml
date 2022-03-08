@@ -1,6 +1,8 @@
 {
   "build" : {
-    "-D"    : ["no-deprecation-warnings","stx.log.null`"],
+    "-D"    : [
+      "no-deprecation-warnings"
+    ],
     "-cp"   : ["src/main/haxe"],
     "-L"    : ["tink_core","stx_pico","stx_nano","stx_fn","stx_fp","stx_log","stx_test","stx_pkg","stx_assert","stx_parse","stx_ds","fletcher"],
     "-resource" : [
@@ -23,6 +25,20 @@
       "-main"     : "Main",
       "interp"  : {
         "--interp"  : true
+      }
+    },
+    "test" : {
+      "-main" : "eu.ohmrun.pml.Test",
+      "interp" : {
+        "-D" : [
+          "debug",
+          "stx.parse.switches.debug=false",
+          "stx.stream.switches.debug=false"
+        ],
+        "--interp" : true
+      },
+      "node" : {
+        "--js" : "build/test/node/main.js"
       }
     }
   }
