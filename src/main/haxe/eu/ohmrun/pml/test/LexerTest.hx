@@ -23,7 +23,7 @@ class LexerTest extends TestCase{
   }
   public function _test_haxe(){
     var reader = __.resource("haxe_cpl").string();
-    var parser = Expr.parse(reader);
+    var parser = PExpr.parse(reader);
     var result = parser.fudge().value;
     trace(result);
   }

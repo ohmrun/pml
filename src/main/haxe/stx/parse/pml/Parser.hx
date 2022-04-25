@@ -19,24 +19,24 @@ class Parser{
       }
     ).tagged('val');
   }
-  function engroup(arr:Cluster<Expr<Atom>>){
+  function engroup(arr:Cluster<PExpr<Atom>>){
     return Group(arr.toLinkedList());
   }
-  public function main():Prs<Token,Expr<Atom>>{
+  public function main():Prs<Token,PExpr<Atom>>{
     return expr_p().one_many().then(engroup);
   }
-  public function expr_p():Prs<Token,Expr<Atom>>{
+  public function expr_p():Prs<Token,PExpr<Atom>>{
     return [
       val(),
       list_p()
     ].ors().tagged("expr");
   }
-  public function list_p():Prs<Token,Expr<Atom>>{
+  public function list_p():Prs<Token,PExpr<Atom>>{
     return bracketed(expr_p.defer().tagged('expr').many().tagged('exprs')).tagged('list');
   }
-  private function bracketed(p:Prs<Token,Cluster<Expr<Atom>>>):Prs<Token,Expr<Atom>>{
+  private function bracketed(p:Prs<Token,Cluster<PExpr<Atom>>>):Prs<Token,PExpr<Atom>>{
     return lparen_p()._and(p).and_(rparen_p()).then(
-      (arr:Cluster<Expr<Atom>>) -> {
+      (arr:Cluster<PExpr<Atom>>) -> {
         return Group(arr.toLinkedList());
       }
     );

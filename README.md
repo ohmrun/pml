@@ -23,10 +23,10 @@ enum Atom{//Data, Eq, Show, Typeable)
   Nul;
 } 
 
-//n.b Label is not parsed in, the parsed in type is Expr<Atom>
-enum ExprDef<T>{
+//n.b Label is not parsed in, the parsed in type is PExpr<Atom>
+enum PExprDef<T>{
   Label(name:String);
-  Group(list:LinkedList<Expr<T>>);
+  Group(list:LinkedList<PExpr<T>>);
   Value(value:T);
   Empty;
 }
