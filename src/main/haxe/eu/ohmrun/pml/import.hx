@@ -7,6 +7,7 @@ using stx.Nano;
 using stx.Parse;
 using stx.Log;
 using stx.Ds;
+using stx.Fn;
 using eu.ohmrun.Fletcher;
 using stx.Assert;
 

@@ -5,7 +5,6 @@ enum PExprDef<T>{
   Group(list:LinkedList<PExpr<T>>);
   Value(value:T);
   Empty;
-  //Flect
 }
 @:using(eu.ohmrun.pml.PExpr.PExprLift)
 abstract PExpr<T>(PExprDef<T>) from PExprDef<T> to PExprDef<T>{
@@ -28,11 +27,11 @@ abstract PExpr<T>(PExprDef<T>) from PExprDef<T> to PExprDef<T>{
           ()               -> {
             var reader : ParseInput<Token> = tkns.value.defv([]).reader();
             return p.main().provide(reader).toProduce().convert(
-              __.passthrough(
+              (
                 (_) -> {
                   __.log().debug('parse expr: ${timer.since()}');
                 }
-              )
+              ).promote()
             );
           },
           () -> {
