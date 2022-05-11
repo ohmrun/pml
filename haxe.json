@@ -15,7 +15,8 @@
       "--macro" : [
         "include('eu.ohmrum.pml',true)",      
         "include('stx.assert',true)",
-        "include('stx.parse.pml',true)"
+        "include('stx.parse.pml',true)",
+        "include('stx.g',true)"
       ],
       "interp" : {
         "--interp"  : true

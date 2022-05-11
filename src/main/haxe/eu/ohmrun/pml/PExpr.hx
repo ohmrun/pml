@@ -115,6 +115,9 @@ class PExprLift{
   static public function comparable<T>(inner:Comparable<T>):Comparable<PExpr<T>>{
     return new stx.assert.pml.comparable.PExpr(inner);
   }
+  static public function denote<T>(self:PExpr<T>,fn:T->GExpr){
+    return new stx.g.denote.PExpr(fn).apply(self);
+  }
 }
 
 /**
