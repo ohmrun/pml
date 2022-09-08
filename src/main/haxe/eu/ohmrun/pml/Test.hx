@@ -13,7 +13,7 @@ class Test{
           //log.includes.push("**/*");
           //log.level = BLANK;
 
-    __.test([
+    __.test().run([
       new LexerTest(),
     ],[]);
   }

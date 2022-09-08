@@ -24,11 +24,15 @@ class AtomLift{
     }
   }
 }
-typedef Num           = eu.ohmrun.pml.Num;
-typedef Symbol        = eu.ohmrun.pml.Symbol;
-typedef Token         = eu.ohmrun.pml.Token;
-typedef PExprDef<T>    = eu.ohmrun.pml.PExpr.PExprDef<T>;
-typedef PExpr<T>       = eu.ohmrun.pml.PExpr<T>;
+typedef Num             = eu.ohmrun.pml.Num;
+typedef Symbol          = eu.ohmrun.pml.Symbol;
+typedef Token           = eu.ohmrun.pml.Token;
+typedef PExprDef<T>     = eu.ohmrun.pml.PExpr.PExprDef<T>;
+typedef PExpr<T>        = eu.ohmrun.pml.PExpr<T>;
+typedef PTypeSum<T>     = eu.ohmrun.pml.PType.PTypeSum<T>;
+typedef PType<T>        = eu.ohmrun.pml.PType<T>;
+typedef PSchemaSum<T>   = eu.ohmrun.pml.PSchema.PSchemaSum<T>;
+typedef PSchema<T>      = eu.ohmrun.pml.PSchema<T>;
 
 typedef PmlFailure    = stx.fail.PmlFailure;
 typedef PmlFailureSum = stx.fail.PmlFailure.PmlFailureSum;

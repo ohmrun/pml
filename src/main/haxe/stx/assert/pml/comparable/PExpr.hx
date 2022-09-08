@@ -2,7 +2,7 @@ package stx.assert.pml.comparable;
 
 import eu.ohmrun.Pml.PExpr in PExprT;
 
-class PExpr<T> implements ComparableApi<PExprT<T>>{
+class PExpr<T> extends ComparableCls<PExprT<T>>{
   var inner : Comparable<T>;
   public function new(inner){
     this.inner = inner;

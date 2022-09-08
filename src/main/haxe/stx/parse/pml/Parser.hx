@@ -13,14 +13,14 @@ class Parser{
   public function val(){
     return stx.parse.Parsers.Choose(
       (t:Token) -> switch(t){
-        case TAtom(atm) : Some(Value(atm));
+        case TAtom(atm) : Some(PValue(atm));
         case null       : None;
         default         : None;
       }
     ).tagged('val');
   }
   function engroup(arr:Cluster<PExpr<Atom>>){
-    return Group(arr.toLinkedList());
+    return PGroup(arr.toLinkedList());
   }
   public function main():Prs<Token,PExpr<Atom>>{
     return expr_p().one_many().then(engroup);
@@ -37,7 +37,7 @@ class Parser{
   private function bracketed(p:Prs<Token,Cluster<PExpr<Atom>>>):Prs<Token,PExpr<Atom>>{
     return lparen_p()._and(p).and_(rparen_p()).then(
       (arr:Cluster<PExpr<Atom>>) -> {
-        return Group(arr.toLinkedList());
+        return PGroup(arr.toLinkedList());
       }
     );
   }

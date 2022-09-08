@@ -9,8 +9,8 @@ class PExpr<T> implements EqApi<PExprT<T>>{
   }
   public function comply(lhs:PExprT<T>,rhs:PExprT<T>){
     return switch([lhs,rhs]){
-      case [Label(lhs),Label(rhs)]      : Eq.String().comply(lhs,rhs);
-      case [Group(lhs),Group(rhs)]      : 
+      case [PLabel(lhs),PLabel(rhs)]      : Eq.String().comply(lhs,rhs);
+      case [PGroup(lhs),PGroup(rhs)]      : 
         lhs.zip(rhs).lfold(
           (tp,m) -> switch(m){
             case NotEqual : NotEqual;
@@ -18,12 +18,12 @@ class PExpr<T> implements EqApi<PExprT<T>>{
           },
           AreEqual
         );
-      case [Value(lhs),Value(rhs)]      : inner.comply(lhs,rhs);
-      case [Empty,Empty]                : AreEqual;
-      case [null, null]                 : AreEqual;
-      case [null,_]                     : NotEqual;
-      case [_,null]                     : NotEqual;
-      default                           : NotEqual;
+      case [PValue(lhs),PValue(rhs)]      : inner.comply(lhs,rhs);
+      case [PEmpty,PEmpty]                : AreEqual;
+      case [null, null]                   : AreEqual;
+      case [null,_]                       : NotEqual;
+      case [_,null]                       : NotEqual;
+      default                             : NotEqual;
     }
   }
 }

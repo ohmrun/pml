@@ -11,12 +11,12 @@ class PExpr<T>{
   public function apply(self:TPExpr<T>){
     final e = __.g().expr();
     return switch(self){
-      case Label(name)      : 
+      case PLabel(name)      : 
         e.Call(
-          e.Path('eu.ohmrun.pml.PExpr.PExprDef.Label'),
+          e.Path('eu.ohmrun.pml.PExpr.PExprDef.PLabel'),
           [e.Const(c -> c.String(name))]
         );
-      case Group(list)      : 
+      case PGroup(list)      : 
         final xs = list.toIter().foldr(
           (n,m) -> e.Call(
             e.Path('stx.ds.LinkedList.LinkedListSum.Cons'),
@@ -27,16 +27,16 @@ class PExpr<T>{
           e.Path('stx.ds.LinkedList.LinkedListSum.Nil')
         );
         e.Call(
-          e.Path('eu.ohmrun.pml.PExpr.PExprDef.Group'),
+          e.Path('eu.ohmrun.pml.PExpr.PExprDef.PGroup'),
           [xs]
         );
-      case Value(value)     : 
+      case PValue(value)     : 
         e.Call(
-          e.Path('eu.ohmrun.pml.PExpr.PExprDef.Value'),
+          e.Path('eu.ohmrun.pml.PExpr.PExprDef.PValue'),
           [inner(value)]
         );
-      case Empty:
-        e.Path('eu.ohmrun.pml.PExpr.PExprDef.Empty');
+      case PEmpty:
+        e.Path('eu.ohmrun.pml.PExpr.PExprDef.PEmpty');
     }
   }
 }

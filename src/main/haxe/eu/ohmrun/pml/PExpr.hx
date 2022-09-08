@@ -1,10 +1,10 @@
 package eu.ohmrun.pml;
 
 enum PExprDef<T>{
-  Label(name:String);
-  Group(list:LinkedList<PExpr<T>>);
-  Value(value:T);
-  Empty;
+  PLabel(name:String);
+  PGroup(list:LinkedList<PExpr<T>>);
+  PValue(value:T);
+  PEmpty;
 }
 @:using(eu.ohmrun.pml.PExpr.PExprLift)
 abstract PExpr<T>(PExprDef<T>) from PExprDef<T> to PExprDef<T>{
@@ -51,11 +51,11 @@ abstract PExpr<T>(PExprDef<T>) from PExprDef<T> to PExprDef<T>{
 
   public function conflate(that:PExpr<T>):PExpr<T>{
     return switch(this){
-      case Empty                        : that;
-      case Label(_) | Value(_)          : Group(Cons(this,Cons(that,Nil)));
-      case Group(array)                 : switch(that){
-        case Group(list)  : Group(array.concat(list));
-        default           : Group(array.snoc(that));
+      case PEmpty                        : that;
+      case PLabel(_) | PValue(_)          : PGroup(Cons(this,Cons(that,Nil)));
+      case PGroup(array)                 : switch(that){
+        case PGroup(list)  : PGroup(array.concat(list));
+        default           : PGroup(array.snoc(that));
       }
     }
   }  
@@ -65,8 +65,8 @@ abstract PExpr<T>(PExprDef<T>) from PExprDef<T> to PExprDef<T>{
   public function toString_with(fn:T->String,?width=130):String{
     return (function rec(self:PExpr<T>,?ind=""):String{
       return switch(self){
-        case Label(name)    : '$name';
-        case Group(array)   : 
+        case PLabel(name)    : '$name';
+        case PGroup(array)   : 
           var items         = array.map(rec.bind(_,'$ind '));
           var length        = items.lfold((n,m) -> m + n.length,0);
           var horizontal    = length < width ? true : false;
@@ -74,19 +74,19 @@ abstract PExpr<T>(PExprDef<T>) from PExprDef<T> to PExprDef<T>{
             () -> '(' + items.join(",") + ')',
             () -> '(\n $ind' + items.join(',\n ${ind}') + '\n$ind)'
           );
-        case Value(value)   : fn(value);
-        case Empty          : "()";
+        case PValue(value)   : fn(value);
+        case PEmpty          : "()";
         case null           : "";
       }
     })(this);
   }
   public function data_only():Option<Cluster<T>>{
     return switch(this){
-      case Group(xs) : 
+      case PGroup(xs) : 
         xs.lfold(
           (n,m:Option<Cluster<T>>) -> switch(m){
             case Some(arr) : switch(n){
-              case Value(value) : Some(arr.snoc(value));
+              case PValue(value) : Some(arr.snoc(value));
               default           : None;
             }
             default : None;
@@ -100,10 +100,10 @@ abstract PExpr<T>(PExprDef<T>) from PExprDef<T> to PExprDef<T>{
 class PExprLift{
   static public function map<T,TT>(expr:PExpr<T>,fn:T->TT):PExpr<TT>{
     return switch expr {
-      case Label(name)      : Label(name);
-      case Group(list)      : Group(list.map(e -> e.map(fn)));
-      case Value(value)     : Value(fn(value));
-      case Empty            : Empty;
+      case PLabel(name)      : PLabel(name);
+      case PGroup(list)      : PGroup(list.map(e -> e.map(fn)));
+      case PValue(value)     : PValue(fn(value));
+      case PEmpty            : PEmpty;
     }
   }
   static public function eq<T>(inner:Eq<T>):Eq<PExpr<T>>{
@@ -121,8 +121,8 @@ class PExprLift{
 }
 
 /**
-  case Label(name)    :
-        case Group(list)    :
-        case Value(value)   : 
-        case Empty          : 
+  case PLabel(name)    :
+        case PGroup(list)    :
+        case PValue(value)   : 
+        case PEmpty          : 
 **/
