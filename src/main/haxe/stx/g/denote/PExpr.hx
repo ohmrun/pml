@@ -13,7 +13,7 @@ class PExpr<T>{
     return switch(self){
       case PLabel(name)      : 
         e.Call(
-          e.Path('eu.ohmrun.pml.PExpr.PExprDef.PLabel'),
+          e.Path('eu.ohmrun.pml.PExpr.PExprSum.PLabel'),
           [e.Const(c -> c.String(name))]
         );
       case PGroup(list)      : 
@@ -27,16 +27,16 @@ class PExpr<T>{
           e.Path('stx.ds.LinkedList.LinkedListSum.Nil')
         );
         e.Call(
-          e.Path('eu.ohmrun.pml.PExpr.PExprDef.PGroup'),
+          e.Path('eu.ohmrun.pml.PExpr.PExprSum.PGroup'),
           [xs]
         );
       case PValue(value)     : 
         e.Call(
-          e.Path('eu.ohmrun.pml.PExpr.PExprDef.PValue'),
+          e.Path('eu.ohmrun.pml.PExpr.PExprSum.PValue'),
           [inner(value)]
         );
       case PEmpty:
-        e.Path('eu.ohmrun.pml.PExpr.PExprDef.PEmpty');
+        e.Path('eu.ohmrun.pml.PExpr.PExprSum.PEmpty');
     }
   }
 }

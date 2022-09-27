@@ -24,7 +24,7 @@ enum Atom{//Data, Eq, Show, Typeable)
 } 
 
 //n.b PLabel is not parsed in, the parsed in type is PExpr<Atom>
-enum PExprDef<T>{
+enum PExprSum<T>{
   PLabel(name:String);
   PGroup(list:LinkedList<PExpr<T>>);
   PValue(value:T);

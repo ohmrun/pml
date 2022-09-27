@@ -1,6 +1,6 @@
 package eu.ohmrun.pml;
 
-enum AtomDef{//Data, Eq, Show, Typeable)
+enum AtomSum{//Data, Eq, Show, Typeable)
   AnSym(s:Symbol);
   B(b:Bool);
   N(fl:Num);
@@ -8,14 +8,14 @@ enum AtomDef{//Data, Eq, Show, Typeable)
   Nul;
 } 
 @:using(eu.ohmrun.pml.Atom.AtomLift)
-abstract Atom(AtomDef) from AtomDef to AtomDef{
+abstract Atom(AtomSum) from AtomSum to AtomSum{
   static public var _(default,never) = AtomLift;
   public function new(self) this = self;
-  static public function lift(self:AtomDef):Atom return new Atom(self);
+  static public function lift(self:AtomSum):Atom return new Atom(self);
 
   
 
-  public function prj():AtomDef return this;
+  public function prj():AtomSum return this;
   private var self(get,never):Atom;
   private function get_self():Atom return lift(this);
 }

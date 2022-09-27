@@ -1,13 +1,13 @@
 package eu.ohmrun.pml;
 
-enum PExprDef<T>{
+enum PExprSum<T>{
   PLabel(name:String);
   PGroup(list:LinkedList<PExpr<T>>);
   PValue(value:T);
   PEmpty;
 }
 @:using(eu.ohmrun.pml.PExpr.PExprLift)
-abstract PExpr<T>(PExprDef<T>) from PExprDef<T> to PExprDef<T>{
+abstract PExpr<T>(PExprSum<T>) from PExprSum<T> to PExprSum<T>{
   static public var _(default,never) = PExprLift;
   public function new(self) this = self;
 
@@ -41,11 +41,11 @@ abstract PExpr<T>(PExprDef<T>) from PExprDef<T> to PExprDef<T>{
       }
     ).produce(__.accept(reader));
   }
-  @:noUsing static public function lift<T>(self:PExprDef<T>):PExpr<T> return new PExpr(self);
+  @:noUsing static public function lift<T>(self:PExprSum<T>):PExpr<T> return new PExpr(self);
 
   
 
-  public function prj():PExprDef<T> return this;
+  public function prj():PExprSum<T> return this;
   private var self(get,never):PExpr<T>;
   private function get_self():PExpr<T> return lift(this);
 
@@ -65,8 +65,8 @@ abstract PExpr<T>(PExprDef<T>) from PExprDef<T> to PExprDef<T>{
   public function toString_with(fn:T->String,?width=130):String{
     return (function rec(self:PExpr<T>,?ind=""):String{
       return switch(self){
-        case PLabel(name)    : '$name';
-        case PGroup(array)   : 
+        case PLabel(name)     : '$name';
+        case PGroup(array)    : 
           var items         = array.map(rec.bind(_,'$ind '));
           var length        = items.lfold((n,m) -> m + n.length,0);
           var horizontal    = length < width ? true : false;
@@ -74,9 +74,9 @@ abstract PExpr<T>(PExprDef<T>) from PExprDef<T> to PExprDef<T>{
             () -> '(' + items.join(",") + ')',
             () -> '(\n $ind' + items.join(',\n ${ind}') + '\n$ind)'
           );
-        case PValue(value)   : fn(value);
-        case PEmpty          : "()";
-        case null           : "";
+        case PValue(value)    : fn(value);
+        case PEmpty           : "()";
+        case null             : "";
       }
     })(this);
   }
