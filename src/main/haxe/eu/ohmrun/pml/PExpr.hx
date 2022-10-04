@@ -18,7 +18,7 @@ abstract PExpr<T>(PExprSum<T>) from PExprSum<T> to PExprSum<T>{
     var l = stx.parse.pml.Lexer;
     
     var reader  = str.reader();
-    return Modulate.fromFletcher(l.main.toFletcher()).reclaim(
+    return Modulate.pure(l.main.apply(reader)).reclaim(
       (tkns:ParseResult<String,Cluster<Token>>) -> {
         __.log().debug('lex expr: ${timer.since()}');
         timer = timer.start();
@@ -26,7 +26,7 @@ abstract PExpr<T>(PExprSum<T>) from PExprSum<T> to PExprSum<T>{
         return tkns.is_ok().if_else(
           ()               -> {
             var reader : ParseInput<Token> = tkns.value.defv([]).reader();
-            return p.main().provide(reader).toProduce().convert(
+            return Produce.pure(p.main().apply(reader)).convert(
               (
                 (_) -> {
                   __.log().debug('parse expr: ${timer.since()}');

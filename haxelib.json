@@ -14,7 +14,6 @@
     "version": "0.3.0",
     "url": "https://github.com/0b1kn00b/stx_pointwise",
     "dependencies": {
-        "hx3compat": "1.0.3",
 
         "stx_pico"      : "git:https://github.com/ohmrun/stx_pico.git",
         "stx_nano"      : "git:https://github.com/ohmrun/stx_nano.git",

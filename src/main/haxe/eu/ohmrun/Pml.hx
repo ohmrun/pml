@@ -12,8 +12,6 @@ typedef Lexer         = stx.parse.pml.Lexer;
 
 typedef AtomSum       = eu.ohmrun.pml.Atom.AtomSum;
 typedef Atom          = eu.ohmrun.pml.Atom;
-typedef AtomTypeSum   = eu.ohmrun.pml.AtomType.AtomTypeSum;
-typedef AtomType      = eu.ohmrun.pml.AtomType;
 
 class AtomLift{
   static public function toString(atom:Atom){
