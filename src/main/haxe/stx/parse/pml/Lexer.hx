@@ -6,15 +6,15 @@ inline function id(string) return __.parse().id(string);
 inline function reg(string) return __.parse().reg(string);
 
 class Lexer{
-  static public var tl_paren      = "(".id().then((_) -> TLParen).tagged("lparen");
-  static public var tr_paren      = ")".id().then((_) -> TRParen).tagged("rparen");
-  static public var whitespace    = Parse.whitespace.tagged("whitespace");
+  static public var tl_paren                = "(".id().then((_) -> TLParen).tagged("lparen");
+  static public var tr_paren                = ")".id().then((_) -> TRParen).tagged("rparen");
+  static public var whitespace              = Parse.whitespace.tagged("whitespace");
   
   static public function float(str:String){
     return TAtom(N(KLFloat(Std.parseFloat(str))));
   }
-  static public var k_float               = "\\\\-?[0-9]+(\\\\.[0-9]+)?".reg().then(float).tagged('float');
-  static public var k_number              = k_float.tagged('number');
+  static public var k_float                 = "\\\\-?[0-9]+(\\\\.[0-9]+)?".reg().then(float).tagged('float');
+  static public var k_number                = k_float.tagged('number');
 
   static function between(current:String){
     return current.substr(1,current.length - 2).trim();
@@ -48,10 +48,10 @@ class Lexer{
        .and_(whitespace.many())
        .and_(Parsers.Eof())
   );
-    static function print_ipt(ipt){
-      trace(ipt);
-    }
-    static function print_opt(opt){
-      trace(opt);
-    }
+  static function print_ipt(ipt){
+    trace(ipt);
+  }
+  static function print_opt(opt){
+    trace(opt);
+  }
 }

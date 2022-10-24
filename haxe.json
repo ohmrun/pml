@@ -9,7 +9,8 @@
       "asset/test.pml@test",
       "asset/test2@testw",
       "asset/test-2.pml@test2",
-      "asset/haxe_cpl.pml@haxe_cpl"
+      "asset/haxe_cpl.pml@haxe_cpl",
+      "asset/haxe_cpl_order.pml@haxe_cpl_order"
     ],
     "unit"  : {
       "--macro" : [

@@ -2,14 +2,11 @@ package eu.ohmrun;
 
 using stx.Nano;
 class Pml{
-  //#end
   static public function pml(wildcard:Wildcard){
     return new eu.ohmrun.pml.Module();
   }
 }
-
 typedef Lexer         = stx.parse.pml.Lexer;
-
 typedef AtomSum       = eu.ohmrun.pml.Atom.AtomSum;
 typedef Atom          = eu.ohmrun.pml.Atom;
 

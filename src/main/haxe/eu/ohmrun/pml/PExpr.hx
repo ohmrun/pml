@@ -87,7 +87,7 @@ abstract PExpr<T>(PExprSum<T>) from PExprSum<T> to PExprSum<T>{
           (n,m:Option<Cluster<T>>) -> switch(m){
             case Some(arr) : switch(n){
               case PValue(value) : Some(arr.snoc(value));
-              default           : None;
+              default            : None;
             }
             default : None;
           },
@@ -118,6 +118,7 @@ class PExprLift{
   static public function denote<T>(self:PExpr<T>,fn:T->GExpr){
     return new stx.g.denote.PExpr(fn).apply(self);
   }
+  //static public function fold<T>(self:PExpr<T>)
 }
 
 /**

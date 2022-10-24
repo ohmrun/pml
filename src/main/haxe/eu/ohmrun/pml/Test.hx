@@ -14,7 +14,8 @@ class Test{
           //log.level = BLANK;
 
     __.test().run([
-      new LexerTest(),
+      //new LexerTest(),
+      new ExtractTest()
     ],[]);
   }
 }

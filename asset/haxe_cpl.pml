@@ -1,6 +1,6 @@
 (hx.Compiler  
   (lib      "stx_pico" "")
-  (lib      "stx_nano" "")
+  (lib      "stx_nano")
   (cp       "src/main/haxe")
   (define    key val)
   (define    key)
@@ -16,6 +16,3 @@
     )
   )
 )
-(hx.Pml "./test/")
-(stx.asset.Copy "./assets/something.png"  "./img/something.png")
-(stx.asset.Hss  "./page.hss" "./page.css")

@@ -1,7 +1,9 @@
 package stx.fail;
 
 enum PmlFailureSum{
-
+  E_Pml_Noise;
+  E_Pml_Empty;
+  E_Pml_Parse(f:ParseFailure);
 }
 abstract PmlFailure(PmlFailureSum) from PmlFailureSum to PmlFailureSum{
   public function new(self) this = self;
