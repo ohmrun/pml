@@ -3,21 +3,6 @@ package eu.ohmrun.pml.test;
 import eu.ohmrun.pml.Extract.*;
 
 class ExtractTest extends TestCase{
-  public function lex_parse(){
-    var p = new stx.parse.pml.Parser();
-    var l = stx.parse.pml.Lexer;
-    return (input:ParseInput<String>) -> {
-      final a = l.main.apply(input);
-      return if(a.is_ok()){
-        a.value.fold(
-          ok -> p.main().apply(ok.reader()),
-          () -> ParseInput.pure(stx.parse.core.Enumerable.array([])).no('no lexed tokens')
-        );
-      }else{
-        ParseResult.make([].reader(),None,a.error);
-      }
-    }
-  }
   public function _test_order(){
     final v = __.resource('haxe_cpl_order').string();
     final p = __.pml().parse(v);
@@ -42,7 +27,7 @@ class ExtractTest extends TestCase{
   }
   public function _test_lib2(){
     final v = 'lib "stx_pico" "2.2"'.reader();
-    final x = lex_parse()(v);
+    final x = __.pml().parseI()(v);
     final a = lib2().apply(x.value.map(x-> [x].imm()).defv([]).reader());
     for(opt in a){
       for(x in opt){
