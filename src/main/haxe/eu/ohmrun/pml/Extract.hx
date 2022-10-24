@@ -74,7 +74,21 @@ class Extract{
       Some('symbol')
     );
   }
+  /**
+    Uses the `nul` created by unpack to determine if a group has been fully parsed.
+  **/
   static public function imbibe<T>(p:Parser<PExpr<Atom>,T>,name:String){
     return unpack()._and(p).and_(nul(name));
+  }
+  static public function fmap<T>(f:PExpr<Atom> -> Option<T>,name:String):Parser<PExpr<Atom>,T>{
+    return Parsers.Anon(
+      (input:ParseInput<PExpr<Atom>>) -> handle_head(
+        (x) -> switch(f(x)){
+          case Some(x)  : input.tail().ok(x);
+          case None     : input.no('failed $name');
+        }
+      )(input),
+      name
+    );
   }
 }
