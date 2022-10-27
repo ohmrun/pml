@@ -22,7 +22,7 @@ class Extract{
         x -> switch(x){
           case PGroup(xs)  : 
             var n = xs.rfold(
-             (next,memo:ParseInput<PExpr<Atom>>) -> memo.prepend(__.tracer()(next))
+             (next,memo:ParseInput<PExpr<Atom>>) -> memo.prepend((next))
              ,input.tail().prepend(PValue(Nul))
             );
             n.nil();
@@ -35,7 +35,7 @@ class Extract{
   static public function wordish():Parser<PExpr<Atom>,String>{
     return Parsers.Anon(
       (input:ParseInput<PExpr<Atom>>) -> handle_head(
-        x -> switch(__.tracer()(x)){
+        x -> switch((x)){
           case PValue(AnSym(s)) : input.tail().ok(s);
           case PValue(Str(s))   : input.tail().ok(s);
           case PLabel(x)        : input.tail().ok(x);
@@ -48,9 +48,8 @@ class Extract{
   static public function nul(name){
     return Parsers.Anon(
       (input) -> {
-        trace(name);
         return handle_head(
-          x -> switch(__.tracer()(x)){
+          x -> switch((x)){
             case PValue(Nul)  : input.tail().nil();
             default           : input.no('not Nul $name');
           }
@@ -62,9 +61,8 @@ class Extract{
   static public function symbol(name:String){
     return Parsers.Anon(
       (input:ParseInput<PExpr<Atom>>) -> {
-        trace(name);
         return handle_head(
-          x -> switch(__.tracer()(x)){
+          x -> switch((x)){
             case PValue(AnSym(s)) if (s == name): input.tail().ok(s);
             case PValue(AnSym(s))               : input.no('symbol should be $name, but is $s');
             default                             : input.no('not a symbol');
