@@ -26,7 +26,7 @@ class Extract{
              ,input.tail().prepend(PValue(Nul))
             );
             n.nil();
-          default         : input.no(e_not_a_group);
+          default         : input.no('Head not a group, but $x');
         }
       )(input),
       Some('unpack')
@@ -58,6 +58,7 @@ class Extract{
       Some('nul $name')
     );
   }
+  
   static public function symbol(name:String){
     return Parsers.Anon(
       (input:ParseInput<PExpr<Atom>>) -> {
@@ -65,11 +66,49 @@ class Extract{
           x -> switch((x)){
             case PValue(AnSym(s)) if (s == name): input.tail().ok(s);
             case PValue(AnSym(s))               : input.no('symbol should be $name, but is $s');
-            default                             : input.no('not a symbol');
+            default                             : input.no('$x not a symbol');
           }
         )(input);
       },
       Some('symbol')
+    );
+  }
+  static public function text(name:String){
+    return Parsers.Anon(
+      (input:ParseInput<PExpr<Atom>>) -> {
+        return handle_head(
+          x -> switch((x)){
+            case PValue(AnSym(s)) if (s == name): input.tail().ok(s);
+            case PValue(Str(s))   if (s == name): input.tail().ok(s);
+            case PValue(Str(s))                 : input.no('text should be $name, but is $s');
+            case PLabel(s)        if (s == name): input.tail().ok(s);
+            case PLabel(s)                      : input.no('text should be $name, but is $s');
+            case PValue(AnSym(s))               : input.no('text should be $name, but is $s');
+            default                             : input.no('not any type of text');
+          }
+        )(input);
+      },
+      Some('string')
+    );
+  }
+  static public function matches<T>(p:Parser<String,T>):Parser<PExpr<Atom>,T>{
+    return Parsers.Anon(
+      (ipt:ParseInput<PExpr<Atom>>) -> {
+        switch(ipt.head()){
+          case Val(PValue(AnSym(s))) | Val(PValue(Str(s))) | Val(PLabel(s)) :
+            final result = p.apply(s.reader());
+            return if(result.is_ok()){
+              result.value.fold( 
+                ok -> ipt.tail().ok(ok),
+                () -> ipt.tail().nil()
+              );
+            }else{
+              ParseResult.make(ipt,None,result.error);
+            }
+          default                                 : ipt.no('not any type of text');
+        }
+      },
+      Some('matches')
     );
   }
   /**
