@@ -15,19 +15,19 @@
     "url": "https://github.com/0b1kn00b/stx_pointwise",
     "dependencies": {
 
-        "stx_pico"      : "git:https://github.com/ohmrun/stx_pico.git",
-        "stx_nano"      : "git:https://github.com/ohmrun/stx_nano.git",
-        "stx_fn"        : "git:https://github.com/ohmrun/stx_fn.git",
+        "stx_pico"      : "",
+        "stx_nano"      : "",
+        "stx_fn"        : "",
 
-        "stx_log"       : "git:https://github.com/ohmrun/stx_log.git",
-        "stx_pkg"       : "git:https://github.com/ohmrun/stx_pkg.git",
-        "stx_assert"    : "git:https://github.com/ohmrun/stx_assert.git",
-        "stx_parse"     : "git:https://github.com/ohmrun/stx_parse.git",
-        "stx_makro"     : "git:https://github.com/ohmrun/stx_makro.git",
+        "stx_log"       : "",
+        "stx_pkg"       : "",
+        "stx_assert"    : "",
+        "stx_parse"     : "",
+        "stx_makro"     : "",
 
-        "stx_ds"        : "git:https://github.com/ohmrun/stx_ds.git",
+        "stx_ds"        : "",
         
-        "fletcher"  : "git:https://github.com/ohmrun/fletcher.git"
+        "fletcher"  : ""
     },
     "classPath": "src/main/haxe"
 }
