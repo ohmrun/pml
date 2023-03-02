@@ -1,4 +1,4 @@
-// package eu.ohmrun.pml;
+package eu.ohmrun.pml;
 
 // interface PmlKindApi<P,R>{
 //   public function nil():R;
