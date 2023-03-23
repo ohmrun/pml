@@ -1,4 +1,4 @@
-package stx;
+package stx.parse.pml;
 
 
 using StringTools;
