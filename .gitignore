@@ -1,6 +1,7 @@
-bin
-test.js
-isolate-*
-processed*.txt
-build/
-.vscode
+/bin
+/test.js
+/isolate-*
+/processed*.txt
+/build/
+/.vscode
+/.env.machine

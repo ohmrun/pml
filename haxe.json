@@ -4,7 +4,7 @@
       "no-deprecation-warnings"
     ],
     "-cp"   : ["src/main/haxe"],
-    "-L"    : ["tink_core","stx_pico","stx_nano","stx_fn","stx_fp","stx_log","stx_test","stx_pkg","stx_assert","stx_parse","stx_ds","fletcher"],
+    "-L"    : ["tink_core","stx_pico","stx_nano","stx_fn","stx_fp","stx_log","stx_pkg","stx_assert","stx_parse","stx_ds","fletcher"],
     "-resource" : [
       "asset/test.pml@test",
       "asset/test2@testw",
@@ -30,6 +30,8 @@
       }
     },
     "test" : {
+      "-cp"   : "src/test/haxe",
+      "-L"    : "stx_test", 
       "-main" : "eu.ohmrun.pml.Test",
       "interp" : {
         "-D" : [
