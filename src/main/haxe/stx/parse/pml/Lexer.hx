@@ -6,6 +6,9 @@ inline function id(string) return __.parse().id(string);
 inline function reg(string) return __.parse().reg(string);
 
 class Lexer{
+  static public var tl_bracket              = "{".id().then((_) -> TLBracket).tagged("lbracket");
+  static public var tr_bracket              = "}".id().then((_) -> TRBracket).tagged("rbracket");
+
   static public var tl_paren                = "(".id().then((_) -> TLParen).tagged("lparen");
   static public var tr_paren                = ")".id().then((_) -> TRParen).tagged("rparen");
   static public var whitespace              = Parse.whitespace.tagged("whitespace");
@@ -39,6 +42,8 @@ class Lexer{
       [
         tl_paren,
         tr_paren,
+        tl_bracket,
+        tr_bracket,
         k_number,
         k_string,
         k_bool,

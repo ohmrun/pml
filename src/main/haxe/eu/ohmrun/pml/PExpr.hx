@@ -5,6 +5,8 @@ enum PExprSum<T>{
   PGroup(list:LinkedList<PExpr<T>>);
   PValue(value:T);
   PEmpty;
+  PAssoc(map:Cluster<Tup2<PExpr<T>,PExpr<T>>>);
+  //PArray(xs:Cluster<PExpr<T>>);
 }
 @:using(eu.ohmrun.pml.PExpr.PExprLift)
 abstract PExpr<T>(PExprSum<T>) from PExprSum<T> to PExprSum<T>{
@@ -57,25 +59,77 @@ abstract PExpr<T>(PExprSum<T>) from PExprSum<T> to PExprSum<T>{
         case PGroup(list)  : PGroup(array.concat(list));
         default           : PGroup(array.snoc(that));
       }
-    }
+      case PAssoc(map) : PAssoc(map);
+     }
   }  
   public function toString():String{
     return toString_with(Std.string);
   }
-  public function toString_with(fn:T->String,?width=130):String{
-    return (function rec(self:PExpr<T>,?ind=""):String{
+  public function toString_with(fn:T->String,?opt : { ?width : Int, ?indent : String }):String{
+    if(opt == null){
+      opt = { width : 130, indent : " "};
+    }
+    if(opt.width  == null) opt.width  = 130;
+    if(opt.indent == null) opt.indent = " ";
+    return (function rec(self:PExpr<T>,?ind=0):String{
+      final gap = Iter.range(0,ind).lfold((n,m) -> '$m${opt.indent}',"");
       return switch(self){
         case PLabel(name)     : '$name';
         case PGroup(array)    : 
-          var items         = array.map(rec.bind(_,'$ind '));
-          var length        = items.lfold((n,m) -> m + n.length,0);
-          var horizontal    = length < width ? true : false;
+          var items         = array.map(rec.bind(_,ind+1));
+          var length        = items.lfold((n,m) -> m + n.length,ind);
+          var horizontal    = length < opt.width ? true : false;
           return horizontal.if_else(
             () -> '(' + items.join(",") + ')',
-            () -> '(\n $ind' + items.join(',\n ${ind}') + '\n$ind)'
+            () -> '(\n ${gap}' + items.join(',\n ${gap}') + '\n${gap})'
           );
         case PValue(value)    : fn(value);
         case PEmpty           : "()";
+        case Pssoc(map)      : 
+          final items           = map.map(
+            __.detuple((k,v) -> {
+             return __.couple(rec(k,ind + 1),rec(v,ind + 1));
+            })
+          );
+          final horizontal_test = items.map(
+            __.decouple((l,r) -> {
+              return '$l $r';
+            })
+          );
+          final length  = horizontal_test.lfold((n,m) -> m + n.length + 2,ind);
+          final showing = if(length > opt.width){
+            final widest = horizontal_test.lfold(
+              (n,m) -> {
+                final l = n.length;
+                return l > m ? l : m;
+              },
+              0
+            );
+            if(widest > opt.width){
+              items.map(
+                __.decouple(
+                  (l:String,r:String) -> '${gap}$l\n${gap}$r'
+                )
+              ).lfold(
+                (n,m) -> '$m\n$n',
+                ""
+              );
+            }else{
+              items.map(
+                __.decouple(
+                  (l,r) -> '${gap}$l: $r'
+                )
+              ).lfold(
+                (n,m) -> '$m\n$n',
+                ""
+              );
+            }
+          }else{
+            var data = horizontal_test.lfold((n,m) -> '$m, $n',"");
+            '${gap}$data';
+          }
+          showing;
+          // var len           = items.lfold((n,m) -> m + n.length,0);
         case null             : "";
       }
     })(this);
@@ -98,14 +152,24 @@ abstract PExpr<T>(PExprSum<T>) from PExprSum<T> to PExprSum<T>{
   }
 }
 class PExprLift{
-  static public function map<T,TT>(expr:PExpr<T>,fn:T->TT):PExpr<TT>{
-    return switch expr {
-      case PLabel(name)      : PLabel(name);
-      case PGroup(list)      : PGroup(list.map(e -> e.map(fn)));
-      case PValue(value)     : PValue(fn(value));
-      case PEmpty            : PEmpty;
-    }
-  }
+  //TODO any rescueing map given the typing?
+  // static public function map<T,TT>(expr:PExpr<T>,fn:T->TT):PExpr<TT>{
+  //   return switch expr {
+  //     case PLabel(name)      : PLabel(name);
+  //     case PGroup(list)      : PGroup(list.map(e -> e.map(fn)));
+  //     case PValue(value)     : PValue(fn(value));
+  //     case PAssoc(map)       : 
+  //     final next = RedBlackMap.make(map.with);
+  //     for(key => val in map){
+  //       next.set(map())
+  //     }  
+  //     PAssoc(
+
+        
+  //     );
+  //     case PEmpty            : PEmpty;
+  //   }
+  // }
   static public function eq<T>(inner:Eq<T>):Eq<PExpr<T>>{
     return new stx.assert.pml.eq.PExpr(inner);
   }
@@ -115,9 +179,9 @@ class PExprLift{
   static public function comparable<T>(inner:Comparable<T>):Comparable<PExpr<T>>{
     return new stx.assert.pml.comparable.PExpr(inner);
   }
-  static public function denote<T>(self:PExpr<T>,fn:T->GExpr){
-    return new stx.g.denote.PExpr(fn).apply(self);
-  }
+  // static public function denote<T>(self:PExpr<T>,fn:T->GExpr){
+  //   return new stx.g.denote.PExpr(fn).apply(self);
+  // }
   //static public function fold<T>(self:PExpr<T>)
 }
 
