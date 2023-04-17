@@ -2,6 +2,7 @@ package eu.ohmrun.pml;
 
 enum PExprSum<T>{
   PLabel(name:String);
+  PApply(name:String);
   PGroup(list:LinkedList<PExpr<T>>);
   PValue(value:T);
   PEmpty;
@@ -53,8 +54,8 @@ abstract PExpr<T>(PExprSum<T>) from PExprSum<T> to PExprSum<T>{
 
   public function conflate(that:PExpr<T>):PExpr<T>{
     return switch(this){
-      case PEmpty                        : that;
-      case PLabel(_) | PValue(_)          : PGroup(Cons(this,Cons(that,Nil)));
+      case PEmpty                                    : that;
+      case PLabel(_) | PValue(_) | PApply(_)         : PGroup(Cons(this,Cons(that,Nil)));
       case PGroup(array)                 : switch(that){
         case PGroup(list)  : PGroup(array.concat(list));
         default           : PGroup(array.snoc(that));
@@ -74,7 +75,8 @@ abstract PExpr<T>(PExprSum<T>) from PExprSum<T> to PExprSum<T>{
     return (function rec(self:PExpr<T>,?ind=0):String{
       final gap = Iter.range(0,ind).lfold((n,m) -> '$m${opt.indent}',"");
       return switch(self){
-        case PLabel(name)     : '$name';
+        case PLabel(name)     : ':$name';
+        case PApply(name)     : '#$name';
         case PGroup(array)    : 
           var items         = array.map(rec.bind(_,ind+1));
           var length        = items.lfold((n,m) -> m + n.length,ind);

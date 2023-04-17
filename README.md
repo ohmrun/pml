@@ -1,14 +1,14 @@
 # PML  (Paranthetical Markup Language)
 
-PML is a data format much like a language that is known and loved but not mentioned here for the same reason actors don't mention the Scottish play.
-
-It has no lambdas but the typed definitions are convenient enough where you have generics and sum types, and quite nice indeed when you add pattern matching.
+PML is a data format very like EDN sans sets because sets in Haxe are impossible to build generically.
 
 ```haxe
 
 enum Token{
   TLParen;
   TRParen;
+  TLBracket;
+  TRBracket;
   TAtom(v:Atom);
   TEof;
 }
@@ -23,8 +23,9 @@ enum Atom{//Data, Eq, Show, Typeable)
   Nul;
 } 
 
-//n.b PLabel is not parsed in, the parsed in type is PExpr<Atom>
+//n.b PLabel is parsed in if the first character of the symbol is ":" , otherwise as PExpr<Atom>
 enum PExprSum<T>{
+  PApply(name:String);
   PLabel(name:String);
   PGroup(list:LinkedList<PExpr<T>>);
   PValue(value:T);

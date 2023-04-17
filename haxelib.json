@@ -6,12 +6,12 @@
         "cross",
         "functional"
     ],
-    "description": "Parenthetical Markup Language, aka lisp with no lambdas",
+    "description": "EDN type format",
     "contributors": [
         "0b1kn00b"
     ],
     "releasenote": "see CHANGELOG.md",
-    "version": "0.3.0",
+    "version": "0.4.0",
     "url": "https://github.com/0b1kn00b/stx_pointwise",
     "dependencies": {
 
@@ -23,7 +23,6 @@
         "stx_pkg"       : "",
         "stx_assert"    : "",
         "stx_parse"     : "",
-        "stx_makro"     : "",
 
         "stx_ds"        : "",
         

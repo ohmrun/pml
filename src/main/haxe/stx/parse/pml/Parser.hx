@@ -23,9 +23,10 @@ class Parser{
   public function val(){
     return stx.parse.Parsers.Choose(
       (t:Token) -> switch(t){
-        case TAtom(atm) : Some(PValue(atm));
-        case null       : None;
-        default         : None;
+        case TAtom(AnSym(s)) if (s.startsWith(":")) : Some(PLabel(s.substr(1)));
+        case TAtom(atm)                             : Some(PValue(atm));
+        case null                                   : None;
+        default                                     : None;
       }
     ).tagged('val');
   }
