@@ -85,7 +85,7 @@ abstract PExpr<T>(PExprSum<T>) from PExprSum<T> to PExprSum<T>{
           );
         case PValue(value)    : fn(value);
         case PEmpty           : "()";
-        case Pssoc(map)      : 
+        case PAssoc(map)      : 
           final items           = map.map(
             __.detuple((k,v) -> {
              return __.couple(rec(k,ind + 1),rec(v,ind + 1));
@@ -106,7 +106,7 @@ abstract PExpr<T>(PExprSum<T>) from PExprSum<T> to PExprSum<T>{
               0
             );
             if(widest > opt.width){
-              items.map(
+              final next = items.map(
                 __.decouple(
                   (l:String,r:String) -> '${gap}$l\n${gap}$r'
                 )
@@ -114,19 +114,24 @@ abstract PExpr<T>(PExprSum<T>) from PExprSum<T> to PExprSum<T>{
                 (n,m) -> '$m\n$n',
                 ""
               );
+              '${gap}\n{\n${next}\n';
             }else{
-              items.map(
+              final next = items.map(
                 __.decouple(
-                  (l,r) -> '${gap}$l: $r'
+                  (l,r) -> '${gap}$l $r'
                 )
               ).lfold(
                 (n,m) -> '$m\n$n',
                 ""
               );
+              '${gap}\n{\n${next}\n';
             }
           }else{
-            var data = horizontal_test.lfold((n,m) -> '$m, $n',"");
-            '${gap}$data';
+            var data = horizontal_test.lfold(
+              (n,m) -> m == "" ? n :'$m,$n',
+              ""
+            );
+            '{$data}';
           }
           showing;
           // var len           = items.lfold((n,m) -> m + n.length,0);
