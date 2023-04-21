@@ -25,8 +25,8 @@
         "stx_parse"     : "",
 
         "stx_ds"        : "",
-        
-        "fletcher"  : ""
+        "stx_om"        : "",
+        "fletcher"      : ""
     },
     "classPath": "src/main/haxe"
 }

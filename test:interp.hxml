@@ -1,0 +1,26 @@
+-main eu.ohmrun.pml.Test
+-cp src/main/haxe
+-cp src/test/haxe
+-D no-deprecation-warnings
+-D debug
+-D stx.parse.switches.debug=false
+-D stx.stream.switches.debug=false
+-resource asset/test.pml@test
+-resource asset/test2@testw
+-resource asset/test-2.pml@test2
+-resource asset/haxe_cpl.pml@haxe_cpl
+-resource asset/haxe_cpl_order.pml@haxe_cpl_order
+-resource asset/v2.pml@v2
+--interp
+-L tink_core
+-L stx_pico
+-L stx_nano
+-L stx_fn
+-L stx_fp
+-L stx_log
+-L stx_pkg
+-L stx_assert
+-L stx_parse
+-L stx_ds
+-L fletcher
+-L stx_test
