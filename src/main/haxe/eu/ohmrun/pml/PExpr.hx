@@ -14,7 +14,7 @@ abstract PExpr<T>(PExprSum<T>) from PExprSum<T> to PExprSum<T>{
   static public var _(default,never) = PExprLift;
   public function new(self) this = self;
 
-  @:noUsing static public function parse(str:String):Produce<ParseResult<Token,PExpr<Atom>>,Noise>{
+  @:noUsing static public function parse(str:String):Provide<ParseResult<Token,PExpr<Atom>>>{
     var timer = Timer.unit();
     __.log().debug('lex');
     var p = new stx.parse.pml.Parser();
@@ -42,10 +42,9 @@ abstract PExpr<T>(PExprSum<T>) from PExprSum<T> to PExprSum<T>{
           }
         );
       }
-    ).produce(__.accept(reader));
+    ).produce(__.accept(reader)).provide();
   }
   @:noUsing static public function lift<T>(self:PExprSum<T>):PExpr<T> return new PExpr(self);
-
   
 
   public function prj():PExprSum<T> return this;
@@ -73,7 +72,7 @@ abstract PExpr<T>(PExprSum<T>) from PExprSum<T> to PExprSum<T>{
     if(opt.width  == null) opt.width  = 130;
     if(opt.indent == null) opt.indent = " ";
     return (function rec(self:PExpr<T>,?ind=0):String{
-      final gap = Iter.range(0,ind).lfold((n,m) -> '$m${opt.indent}',"");
+      final gap = Iter.range(0,ind).lfold((n,m) -> '$m${opt.indent}', "");
       return switch(self){
         case PLabel(name)     : ':$name';
         case PApply(name)     : '#$name';
@@ -82,8 +81,8 @@ abstract PExpr<T>(PExprSum<T>) from PExprSum<T> to PExprSum<T>{
           var length        = items.lfold((n,m) -> m + n.length,ind);
           var horizontal    = length < opt.width ? true : false;
           return horizontal.if_else(
-            () -> '(' + items.join(",") + ')',
-            () -> '(\n ${gap}' + items.join(',\n ${gap}') + '\n${gap})'
+            () -> '(' + items.join(" ") + ')',
+            () -> '(\n ${gap}' + items.join(' \n ${gap}') + '\n${gap})'
           );
         case PValue(value)    : fn(value);
         case PEmpty           : "()";
@@ -130,7 +129,7 @@ abstract PExpr<T>(PExprSum<T>) from PExprSum<T> to PExprSum<T>{
             }
           }else{
             var data = horizontal_test.lfold(
-              (n,m) -> m == "" ? n :'$m,$n',
+              (n,m) -> m == "" ? n :'$m $n',
               ""
             );
             '{$data}';
@@ -190,6 +189,17 @@ class PExprLift{
   //   return new stx.g.denote.PExpr(fn).apply(self);
   // }
   //static public function fold<T>(self:PExpr<T>)
+  // static public function is_stringy(self:PExpr<Atom>){
+  //   return 
+  // }
+  static public function get_string(self:PExpr<Atom>){
+    return switch(self){
+      case PLabel(name) | PApply(name) | PValue(AnSym(name)) | PValue(Str(name)) : 
+        Some(name);
+      default       : 
+        None;
+    }
+  }
 }
 
 /**

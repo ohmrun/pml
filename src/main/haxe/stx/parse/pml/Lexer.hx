@@ -5,6 +5,7 @@ using stx.parse.pml.Lexer;
 inline function id(string) return __.parse().id(string);
 inline function reg(string) return __.parse().reg(string);
 
+//TODO new regular expression situation.
 class Lexer{
   static public var tl_bracket              = "{".id().then((_) -> TLBracket).tagged("lbracket");
   static public var tr_bracket              = "}".id().then((_) -> TRBracket).tagged("rbracket");
@@ -16,7 +17,8 @@ class Lexer{
   static public function float(str:String){
     return TAtom(N(KLFloat(Std.parseFloat(str))));
   }
-  static public var k_float                 = "\\\\-?[0-9]+(\\\\.[0-9]+)?".reg().then(float).tagged('float');
+  static public final k_float_r             = "(-?[0-9]+(.[0-9]+)?)";
+  static public var k_float                 = k_float_r.reg().then(float).tagged('float');
   static public var k_number                = k_float.tagged('number');
 
   static function between(current:String){

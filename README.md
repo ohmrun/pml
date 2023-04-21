@@ -1,9 +1,20 @@
 # PML  (Paranthetical Markup Language)
 
-PML is a data format very like EDN sans sets because sets in Haxe are impossible to build generically.
+PML is a data format very like EDN.
+
+## Usage
 
 ```haxe
+  using stx.Nano;
+  using eu.ohmrun.Fletcher;
+  using eu.ohmrun.Pml;
 
+  function parse_something(){
+    final provide = __.pml().parse(__.resource("test.pml"));
+    __.ctx().load(provide)
+  }
+```
+```haxe
 enum Token{
   TLParen;
   TRParen;

@@ -4,7 +4,7 @@
       "no-deprecation-warnings"
     ],
     "-cp"   : ["src/main/haxe"],
-    "-L"    : ["tink_core","stx_pico","stx_nano","stx_fn","stx_fp","stx_log","stx_pkg","stx_assert","stx_parse","stx_ds","fletcher"],
+    "-L"    : ["tink_core","stx_pico","stx_nano","stx_fn","stx_fp","stx_log","stx_pkg","stx_assert","stx_parse","stx_ds","fletcher","stx_om"],
     "-resource" : [
       "asset/test.pml@test",
       "asset/test2@testw",
@@ -38,7 +38,7 @@
         "-D" : [
           "debug",
           "stx.parse.switches.debug=false",
-          "stx.stream.switches.debug=false"
+          "stx.stream.switches.debug=true"
         ],
         "--interp" : true
       },

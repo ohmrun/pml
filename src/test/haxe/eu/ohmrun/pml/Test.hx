@@ -10,11 +10,19 @@ import eu.ohmrun.pml.test.*;
 
 class Test{
   static public function main(){
+    
     __.logger().global().configure(
       logger -> logger.with_logic(
-        logic -> logic.or(logic.tags(["stx/parse","eu/ohmrun/pml"]))
+        logic -> logic.or(
+          logic.tags(
+            ["stx/parse",
+             "eu/ohmrun/pml",
+             "stx/stream"]
+          )
+        )
       )
     );
+
     //final log = __.log().global;
           //log.includes.push("**/*");
           //log.level = BLANK;
@@ -22,7 +30,8 @@ class Test{
     __.test().run([
       //new LexerTest(),
       //new ExtractTest(),
-      new V2Test()
+      //new V2Test()
+      new HaxeV4_3_0_RegularExpressionsTest()
     ],[]);
   }
 }

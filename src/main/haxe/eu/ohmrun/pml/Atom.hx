@@ -1,5 +1,7 @@
 package eu.ohmrun.pml;
 
+import stx.om.Spine;
+
 enum AtomSum{//Data, Eq, Show, Typeable)
   AnSym(s:Symbol);
   B(b:Bool);
@@ -27,6 +29,16 @@ class AtomLift{
       case N(fl)              : Std.string(fl);
       case Str(str)           : '$str';
       case Nul                : '';
+    }
+  }
+  static public function toPrimitive(self:Atom){
+    return switch(self){
+      case AnSym(s)           : Primate(PSprig(Textal(s)));
+      case B(b)               : Primate(PBool(b));
+      case N(KLFloat(fl))     : Primate(PSprig(Byteal(NFloat(fl))));
+      case N(KLInt(fl))       : Primate(PSprig(Byteal(NInt(fl))));
+      case Str(str)           : Primate(PSprig(Textal(str)));
+      case Nul                : Unknown;
     }
   }
 }

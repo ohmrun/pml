@@ -2,7 +2,7 @@ package stx.assert.pml.eq;
 
 import eu.ohmrun.Pml.PExpr in PExprT;
 
-class PExpr<T> implements EqApi<PExprT<T>>{
+class PExpr<T> extends EqCls<PExprT<T>>{
   var inner : Eq<T>;
   public function new(inner){
     this.inner = inner;
