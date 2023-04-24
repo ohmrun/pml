@@ -1,9 +1,12 @@
 package stx.parse.pml;
 
+
 using stx.parse.pml.Lexer;
 
-inline function id(string) return __.parse().id(string);
-inline function reg(string) return __.parse().reg(string);
+import stx.parse.parsers.StringParsers in SParse;
+
+inline function id(string) return SParse.id(string);
+inline function reg(string) return SParse.reg(string);
 
 //TODO new regular expression situation.
 class Lexer{
@@ -12,24 +15,26 @@ class Lexer{
 
   static public var tl_paren                = "(".id().then((_) -> TLParen).tagged("lparen");
   static public var tr_paren                = ")".id().then((_) -> TRParen).tagged("rparen");
-  static public var whitespace              = Parse.whitespace.tagged("whitespace");
+  static public var whitespace              = SParse.whitespace.tagged("whitespace");
   
   static public function float(str:String){
     return TAtom(N(KLFloat(Std.parseFloat(str))));
   }
-  static public final k_float_r             = "(-?[0-9]+(.[0-9]+)?)";
-  static public var k_float                 = k_float_r.reg().then(float).tagged('float');
-  static public var k_number                = k_float.tagged('number');
+  static public var k_float                 = SParse.float.then(float).tagged('float');
+  static public function int(str:String){
+    return TAtom(N(KLInt(Std.parseInt(str))));
+  }
+  static public var k_int                   = SParse.integer.and_(id(".").not().lookahead()).then(int).tagged('int');
 
   static function between(current:String){
     return current.substr(1,current.length - 2).trim();
   }
-  static public var k_string      = Parse.literal
+  static public var k_string      = SParse.literal
     .then(
       (x) -> TAtom(Str(x))
     ).tagged('string');
 
-  static public var k_bool        = '\\(true|false\\)'.reg()
+  static public var k_bool        = '(true|false)'.reg()
     .then(
       (x) -> TAtom(B(x == "true" ? true : false))
     ).tagged('bool');
@@ -46,7 +51,8 @@ class Lexer{
         tr_paren,
         tl_bracket,
         tr_bracket,
-        k_number,
+        k_int,
+        k_float,
         k_string,
         k_bool,
         k_atom,

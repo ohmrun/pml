@@ -3,22 +3,22 @@ package stx.parse.pml;
 using stx.parse.pml.Parser;
 
 function id(wildcard:Wildcard,s:String){
-  return __.parse().id(s);
+  return __.parse().parsers().string().id(s);
 }
 
 class Parser{
   public function new(){}
   public function lparen_p(){
-    return Parse.eq(TLParen).tagged('lparen');
+    return Parsers.Equals(TLParen).tagged('lparen');
   }
   public function rparen_p(){
-    return Parse.eq(TRParen).tagged('rparen');
+    return Parsers.Equals(TRParen).tagged('rparen');
   }
   public function lbracket_p(){
-    return Parse.eq(TLBracket).tagged('lbracket');
+    return Parsers.Equals(TLBracket).tagged('lbracket');
   }
   public function rbracket_p(){
-    return Parse.eq(TRBracket).tagged('rbracket');
+    return Parsers.Equals(TRBracket).tagged('rbracket');
   }
   public function val(){
     return stx.parse.Parsers.Choose(

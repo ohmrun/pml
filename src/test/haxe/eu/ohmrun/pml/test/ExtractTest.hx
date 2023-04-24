@@ -7,7 +7,7 @@ class ExtractTest extends TestCase{
     final v = __.resource('haxe_cpl_order').string();
     final p = __.pml().parse(v);
     final q = p.errate((_) -> E_Pml_Noise).adjust(
-      pr -> pr.toRes().errate(E_Pml_Parse)
+      pr -> pr.toUpshot().errate(E_Pml_Parse)
     ).adjust(
       x -> x.fold(
         ok -> __.accept(ok),
@@ -39,7 +39,7 @@ class ExtractTest extends TestCase{
     final v = __.resource('haxe_cpl').string();
     final p = __.pml().parse(v);
     final q = p.errate((_) -> E_Pml_Noise).adjust(
-      pr -> pr.toRes().errate(E_Pml_Parse)
+      pr -> pr.toUpshot().errate(E_Pml_Parse)
     ).adjust(
       x -> x.fold(
         ok -> __.accept(ok),

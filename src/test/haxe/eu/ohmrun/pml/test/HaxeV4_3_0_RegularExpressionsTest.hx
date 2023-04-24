@@ -3,17 +3,21 @@ package eu.ohmrun.pml.test;
 using stx.parse.pml.Lexer;
 
 class HaxeV4_3_0_RegularExpressionsTest extends TestCase{
-  public function test(){
-    final str = Lexer.k_float_r;
-    trace(str);
-    final reg = new EReg(str,"g");
-    final res = reg.match("0.1");
-    trace(res);
-    var i = 0;
-    while(true){
-      trace(reg.matched(i));
-      i++;
+  public function test_float(){
+    final p = Lexer.k_float;
+    final s = '-0.1'.reader();
+    final r = p.apply(s);
+    for(x in r.toUpshot().fudge()){
+      same(x,TAtom(N(KLFloat(-0.1))));
     }
-
+  }
+  public function test_bool(){
+    final p = Lexer.k_bool;
+    final s = 'false'.reader();
+    final r = p.apply(s);
+    for(x in r.toUpshot().fudge()){
+      trace(x);
+      same(x,TAtom(B(false)));
+    }
   }
 }
