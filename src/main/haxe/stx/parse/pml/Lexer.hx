@@ -8,15 +8,21 @@ import stx.parse.parsers.StringParsers in SParse;
 inline function id(string) return SParse.id(string);
 inline function reg(string) return SParse.reg(string);
 
-//TODO new regular expression situation.
 class Lexer{
   static public var tl_bracket              = "{".id().then((_) -> TLBracket).tagged("lbracket");
   static public var tr_bracket              = "}".id().then((_) -> TRBracket).tagged("rbracket");
 
+  static public var tl_square_bracket       = "[".id().then((_) -> TLSquareBracket).tagged("l_square_bracket");
+  static public var tr_square_bracket       = "]".id().then((_) -> TRSquareBracket).tagged("r_square_bracket");
+
   static public var tl_paren                = "(".id().then((_) -> TLParen).tagged("lparen");
   static public var tr_paren                = ")".id().then((_) -> TRParen).tagged("rparen");
+
   static public var whitespace              = SParse.whitespace.tagged("whitespace");
   
+  static public function t_hash_lbracket(){
+    return id("#").and(tl_bracket).then(_ -> THashLBracket);
+  }
   static public function float(str:String){
     return TAtom(N(KLFloat(Std.parseFloat(str))));
   }
@@ -49,6 +55,9 @@ class Lexer{
       [
         tl_paren,
         tr_paren,
+        t_hash_lbracket(),
+        tl_square_bracket,
+        tr_square_bracket,
         tl_bracket,
         tr_bracket,
         k_int,

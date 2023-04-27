@@ -2,7 +2,7 @@ package eu.ohmrun.pml.test;
 
 @stx.test.async
 class V2Test extends TestCase{
-  public function test(async:stx.test.Async){
+  public function test(async:Async){
     final v               = __.resource("v2").string();
     final provide         = __.pml().parse(v); 
     __.ctx(
@@ -15,4 +15,5 @@ class V2Test extends TestCase{
     ).load(provide)
      .submit();
   }
+  public function test(){}
 }

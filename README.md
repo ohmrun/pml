@@ -34,13 +34,15 @@ enum Atom{//Data, Eq, Show, Typeable)
   Nul;
 } 
 
-//n.b PLabel is parsed in if the first character of the symbol is ":" , otherwise as PExpr<Atom>
 enum PExprSum<T>{
-  PApply(name:String);
-  PLabel(name:String);
-  PGroup(list:LinkedList<PExpr<T>>);
-  PValue(value:T);
+  PLabel(name:String);//:
+  PApply(name:String);//#
+  PGroup(list:LinkedList<PExpr<T>>);//(...)
+  PArray(array:Cluster<PExpr<T>>);//[...]
+  PValue(value:T);//
   PEmpty;
+  PAssoc(map:Cluster<Tup2<PExpr<T>,PExpr<T>>>);//{}
+  PSet(arr:Cluster<PExpr<T>>);//#{}
 }
 
 ```

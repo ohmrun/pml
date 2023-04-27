@@ -14,11 +14,20 @@ class Parser{
   public function rparen_p(){
     return Parsers.Equals(TRParen).tagged('rparen');
   }
+  public function hash_lbracket_p(){
+    return Parsers.Equals(THashLBracket).tagged('hash_lbracket');
+  }
   public function lbracket_p(){
     return Parsers.Equals(TLBracket).tagged('lbracket');
   }
   public function rbracket_p(){
     return Parsers.Equals(TRBracket).tagged('rbracket');
+  }
+  public function l_square_bracket_p(){
+    return Parsers.Equals(TLSquareBracket).tagged('lbracket');
+  }
+  public function r_square_bracket_p(){
+    return Parsers.Equals(TRSquareBracket).tagged('rbracket');
   }
   public function val(){
     return stx.parse.Parsers.Choose(
@@ -38,6 +47,7 @@ class Parser{
   }
   public function expr_p():stx.parse.Parser<Token,PExpr<Atom>>{
     return [
+      set_p(),
       map_p(),
       val(),
       list_p()
@@ -52,10 +62,22 @@ class Parser{
   public function list_p():stx.parse.Parser<Token,PExpr<Atom>>{
     return bracketed(expr_p.cache().tagged('expr').many().tagged('exprs')).tagged('list');
   }
+  public function set_p(){
+    return hash_lbracket_p()._and(expr_p.cache().many()).and_(rbracket_p()).then(
+      (arr) -> PSet(arr)
+    );
+  }
   private function bracketed(p:stx.parse.Parser<Token,Cluster<PExpr<Atom>>>):stx.parse.Parser<Token,PExpr<Atom>>{
     return lparen_p()._and(p).and_(rparen_p()).then(
       (arr:Cluster<PExpr<Atom>>) -> {
         return PGroup(arr.toLinkedList());
+      }
+    );
+  }
+  private function square_bracketed(p:stx.parse.Parser<Token,Cluster<PExpr<Atom>>>):stx.parse.Parser<Token,PExpr<Atom>>{
+    return l_square_bracket_p()._and(p).and_(r_square_bracket_p()).then(
+      (arr:Cluster<PExpr<Atom>>) -> {
+        return PArray(arr);
       }
     );
   }

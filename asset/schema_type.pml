@@ -1,10 +1,10 @@
-record = (
-  token('record') (
-  "record" $name (
-    (field)+
+{
+  record  (
+    token('record') (
+    "record" $name (
+      (field)+
+    )
+    meta
   )
-  meta
-
-)
-
-field := 
+  field ()
+}

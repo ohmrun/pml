@@ -1,5 +1,16 @@
 package eu.ohmrun.pml;
 
+enum PType<T>{
+  PTNil;
+  PTAny;
+  PTVal(v:T);
+  PTTag(id:String,apply:Option<Bool>);
+  PTGrp(t:PType<T>);
+  PTOpt(t:PType<T>);
+  PTMap(key:PType<T>,val:PType<T>);
+  PTObj(arr:Cluster<Tup2<String,PType>>);
+  PTAlt(types:Cluster<PType<T>>);
+}
 // interface PmlKindApi<P,R>{
 //   public function nil():R;
 //   public function itm(v:P):R;

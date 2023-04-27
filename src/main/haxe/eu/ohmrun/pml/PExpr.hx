@@ -4,10 +4,11 @@ enum PExprSum<T>{
   PLabel(name:String);
   PApply(name:String);
   PGroup(list:LinkedList<PExpr<T>>);
+  PArray(array:Cluster<PExpr<T>>);
   PValue(value:T);
   PEmpty;
   PAssoc(map:Cluster<Tup2<PExpr<T>,PExpr<T>>>);
-  //PArray(xs:Cluster<PExpr<T>>);
+  PSet(arr:Cluster<PExpr<T>>);
 }
 @:using(eu.ohmrun.pml.PExpr.PExprLift)
 abstract PExpr<T>(PExprSum<T>) from PExprSum<T> to PExprSum<T>{
@@ -51,17 +52,21 @@ abstract PExpr<T>(PExprSum<T>) from PExprSum<T> to PExprSum<T>{
   private var self(get,never):PExpr<T>;
   private function get_self():PExpr<T> return lift(this);
 
-  public function conflate(that:PExpr<T>):PExpr<T>{
-    return switch(this){
-      case PEmpty                                    : that;
-      case PLabel(_) | PValue(_) | PApply(_)         : PGroup(Cons(this,Cons(that,Nil)));
-      case PGroup(array)                 : switch(that){
-        case PGroup(list)  : PGroup(array.concat(list));
-        default           : PGroup(array.snoc(that));
-      }
-      case PAssoc(map) : PAssoc(map);
-     }
-  }  
+  // public function conflate(that:PExpr<T>):PExpr<T>{
+  //   return switch(this){
+  //     case PEmpty                                    : that;
+  //     case PSet(s)                                    :
+  //       switch(that){
+  //         case P
+  //       }  
+  //     case PLabel(_) | PValue(_) | PApply(_)         : PGroup(Cons(this,Cons(that,Nil)));
+  //     case PGroup(array)                 : switch(that){
+  //       case PGroup(list)  : PGroup(array.concat(list));
+  //       default           : PGroup(array.snoc(that));
+  //     }
+  //     case PAssoc(map) : PAssoc(map);
+  //    }
+  // }  
   public function toString():String{
     return toString_with(Std.string);
   }
@@ -75,6 +80,22 @@ abstract PExpr<T>(PExprSum<T>) from PExprSum<T> to PExprSum<T>{
       final gap = Iter.range(0,ind).lfold((n,m) -> '$m${opt.indent}', "");
       return switch(self){
         case PLabel(name)     : ':$name';
+        case PSet(array)       : 
+          var items         = array.map(rec.bind(_,ind+1));
+          var length        = items.lfold((n,m) -> m + n.length,ind);
+          var horizontal    = length < opt.width ? true : false;
+          return horizontal.if_else(
+            () -> '#{' + items.join(" ") + '}',
+            () -> '{\n ${gap}' + items.join(' \n ${gap}') + '\n${gap}}'
+          );
+        case PArray(array)       : 
+          var items         = array.map(rec.bind(_,ind+1));
+          var length        = items.lfold((n,m) -> m + n.length,ind);
+          var horizontal    = length < opt.width ? true : false;
+          return horizontal.if_else(
+            () -> '[]' + items.join(" ") + ']',
+            () -> '[\n ${gap}' + items.join(' \n ${gap}') + '\n${gap}]'
+          );
         case PApply(name)     : '#$name';
         case PGroup(array)    : 
           var items         = array.map(rec.bind(_,ind+1));

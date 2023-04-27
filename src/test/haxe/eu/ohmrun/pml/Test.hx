@@ -30,7 +30,8 @@ class Test{
     __.test().run([
       //new LexerTest(),
       //new ExtractTest(),
-      new V2Test()
+      new V2Test(),
+      new PTypeTest(),
       //new HaxeV4_3_0_RegularExpressionsTest()
     ],[]);
   }
