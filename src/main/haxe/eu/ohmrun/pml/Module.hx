@@ -13,7 +13,7 @@ class Module extends Clazz{
       return if(a.is_ok()){
         a.value.fold(
           ok -> p.main().apply(ok.reader()),
-          () -> ParseInput.pure(stx.parse.core.Enumerable.array([])).no('no lexed tokens')
+          () -> ParseInput.pure(stx.parse.core.Enumerable.Array([])).no('no lexed tokens')
         );
       }else{
         ParseResult.make([].reader(),None,a.error);
