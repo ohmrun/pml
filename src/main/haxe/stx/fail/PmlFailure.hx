@@ -1,7 +1,7 @@
 package stx.fail;
 
 enum PmlFailureSum{
-  E_Pml_Noise;
+  E_Pml_Nada;
   E_Pml_Empty;
   E_Pml_Parse(f:ParseFailure);
 }

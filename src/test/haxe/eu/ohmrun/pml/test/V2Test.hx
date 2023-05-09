@@ -6,7 +6,7 @@ class V2Test extends TestCase{
     final v               = __.resource("v2").string();
     final provide         = __.pml().parse(v); 
     __.ctx(
-      Noise,
+      Nada,
       (x:ParseResult<Token,PExpr<Atom>>) -> {
         final v = x.toUpshot().option().flat_map(x -> x).defv(null);
         trace(v.toString_with((x:Atom) -> x.toString()));
