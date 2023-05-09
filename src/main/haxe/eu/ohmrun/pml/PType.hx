@@ -8,7 +8,7 @@ enum PType<T>{
   PTGrp(t:PType<T>);
   PTOpt(t:PType<T>);
   PTMap(key:PType<T>,val:PType<T>);
-  PTObj(arr:Cluster<Tup2<String,PType>>);
+  PTObj(arr:Cluster<Tup2<String,PType<T>>>);
   PTAlt(types:Cluster<PType<T>>);
 }
 // interface PmlKindApi<P,R>{
