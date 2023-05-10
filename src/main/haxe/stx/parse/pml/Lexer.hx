@@ -9,26 +9,26 @@ inline function id(string) return SParse.id(string);
 inline function reg(string) return SParse.reg(string);
 
 class Lexer{
-  static public var tl_bracket              = "{".id().then((_) -> TLBracket).tagged("lbracket");
-  static public var tr_bracket              = "}".id().then((_) -> TRBracket).tagged("rbracket");
+  static public var tl_bracket              = "{".id().then((_) -> PTLBracket).tagged("lbracket");
+  static public var tr_bracket              = "}".id().then((_) -> PTRBracket).tagged("rbracket");
 
-  static public var tl_square_bracket       = "[".id().then((_) -> TLSquareBracket).tagged("l_square_bracket");
-  static public var tr_square_bracket       = "]".id().then((_) -> TRSquareBracket).tagged("r_square_bracket");
+  static public var tl_square_bracket       = "[".id().then((_) -> PTLSquareBracket).tagged("l_square_bracket");
+  static public var tr_square_bracket       = "]".id().then((_) -> PTRSquareBracket).tagged("r_square_bracket");
 
-  static public var tl_paren                = "(".id().then((_) -> TLParen).tagged("lparen");
-  static public var tr_paren                = ")".id().then((_) -> TRParen).tagged("rparen");
+  static public var tl_paren                = "(".id().then((_) -> PTLParen).tagged("lparen");
+  static public var tr_paren                = ")".id().then((_) -> PTRParen).tagged("rparen");
 
   static public var whitespace              = SParse.whitespace.tagged("whitespace");
   
   static public function t_hash_lbracket(){
-    return id("#").and(tl_bracket).then(_ -> THashLBracket);
+    return id("#").and(tl_bracket).then(_ -> PTHashLBracket);
   }
   static public function float(str:String){
-    return TAtom(N(KLFloat(Std.parseFloat(str))));
+    return PTData(N(KLFloat(Std.parseFloat(str))));
   }
   static public var k_float                 = SParse.float.then(float).tagged('float');
   static public function int(str:String){
-    return TAtom(N(KLInt(Std.parseInt(str))));
+    return PTData(N(KLInt(Std.parseInt(str))));
   }
   static public var k_int                   = SParse.integer.and_(id(".").not().lookahead()).then(int).tagged('int');
 
@@ -37,17 +37,17 @@ class Lexer{
   }
   static public var k_string      = SParse.literal
     .then(
-      (x) -> TAtom(Str(x))
+      (x) -> PTData(Str(x))
     ).tagged('string');
 
   static public var k_bool        = '(true|false)'.reg()
     .then(
-      (x) -> TAtom(B(x == "true" ? true : false))
+      (x) -> PTData(B(x == "true" ? true : false))
     ).tagged('bool');
       
   static public var k_atom        = "[^ \r\t\n\\(\\)]+".reg()
     .then(
-      (x:String) -> TAtom(AnSym((x:Symbol)))
+      (x:String) -> PTData(AnSym((x:Symbol)))
     ).tagged('atom');
     
   static public var main : Parser<String,Cluster<Token>> = (

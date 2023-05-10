@@ -9,31 +9,31 @@ function id(wildcard:Wildcard,s:String){
 class Parser{
   public function new(){}
   public function lparen_p(){
-    return Parsers.Equals(TLParen).tagged('lparen');
+    return Parsers.Equals(PTLParen).tagged('lparen');
   }
   public function rparen_p(){
-    return Parsers.Equals(TRParen).tagged('rparen');
+    return Parsers.Equals(PTRParen).tagged('rparen');
   }
   public function hash_lbracket_p(){
-    return Parsers.Equals(THashLBracket).tagged('hash_lbracket');
+    return Parsers.Equals(PTHashLBracket).tagged('hash_lbracket');
   }
   public function lbracket_p(){
-    return Parsers.Equals(TLBracket).tagged('lbracket');
+    return Parsers.Equals(PTLBracket).tagged('lbracket');
   }
   public function rbracket_p(){
-    return Parsers.Equals(TRBracket).tagged('rbracket');
+    return Parsers.Equals(PTRBracket).tagged('rbracket');
   }
   public function l_square_bracket_p(){
-    return Parsers.Equals(TLSquareBracket).tagged('lbracket');
+    return Parsers.Equals(PTLSquareBracket).tagged('lbracket');
   }
   public function r_square_bracket_p(){
-    return Parsers.Equals(TRSquareBracket).tagged('rbracket');
+    return Parsers.Equals(PTRSquareBracket).tagged('rbracket');
   }
   public function val(){
     return stx.parse.Parsers.Choose(
       (t:Token) -> switch(t){
-        case TAtom(AnSym(s)) if (s.startsWith(":")) : Some(PLabel(s.substr(1)));
-        case TAtom(atm)                             : Some(PValue(atm));
+        case PTData(AnSym(s)) if (s.startsWith(":")) : Some(PLabel(s.substr(1)));
+        case PTData(atm)                             : Some(PValue(atm));
         case null                                   : None;
         default                                     : None;
       }

@@ -24,6 +24,8 @@ class AtomLift{
 }
 typedef Num             = eu.ohmrun.pml.Num;
 typedef Symbol          = eu.ohmrun.pml.Symbol;
+typedef PTokenSum<T>    = eu.ohmrun.pml.PToken.PTokenSum<T>;
+typedef PToken<T>       = eu.ohmrun.pml.PToken<T>;
 typedef Token           = eu.ohmrun.pml.Token;
 typedef PExprSum<T>     = eu.ohmrun.pml.PExpr.PExprSum<T>;
 typedef PExpr<T>        = eu.ohmrun.pml.PExpr<T>;

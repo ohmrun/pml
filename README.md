@@ -18,10 +18,10 @@ PML is a data format very like EDN.
 enum Token{
   TLParen;
   TRParen;
-  TLBracket;
-  TRBracket;
-  TAtom(v:Atom);
-  TEof;
+  PTLBracket;
+  PTRBracket;
+  PTData(v:Atom);
+  PTEof;
 }
 
 typedef Symbol = String;

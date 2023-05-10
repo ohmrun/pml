@@ -15,6 +15,8 @@ abstract PExpr<T>(PExprSum<T>) from PExprSum<T> to PExprSum<T>{
   static public var _(default,never) = PExprLift;
   public function new(self) this = self;
 
+  //TODO make parse synchronous
+  @stability(1)
   @:noUsing static public function parse(str:String):Provide<ParseResult<Token,PExpr<Atom>>>{
     var timer = Timer.unit();
     __.log().debug('lex');
@@ -93,7 +95,7 @@ abstract PExpr<T>(PExprSum<T>) from PExprSum<T> to PExprSum<T>{
           var length        = items.lfold((n,m) -> m + n.length,ind);
           var horizontal    = length < opt.width ? true : false;
           return horizontal.if_else(
-            () -> '[]' + items.join(" ") + ']',
+            () -> '[' + items.join(" ") + ']',
             () -> '[\n ${gap}' + items.join(' \n ${gap}') + '\n${gap}]'
           );
         case PApply(name)     : '#$name';
@@ -221,11 +223,59 @@ class PExprLift{
         None;
     }
   }
+  static public function tokenize<T>(self:PExpr<T>):Cluster<PToken<Either<String,T>>>{
+    function rec(self:PExpr<T>):Cluster<PToken<Either<String,T>>>{
+      return switch(self){
+        case PLabel(name)   : [PTData(Left(':$name'))].imm();
+        case PApply(name)   : [PTData(Left('#$name'))].imm();
+        case PGroup(list)   : [PTLParen].imm().concat(list.lfold(
+          (next:PExpr<T>,memo:Cluster<PToken<Either<String,T>>>) -> {
+            return memo.concat(rec(next));
+          },
+          [].imm()
+        )).snoc(PTRParen);
+        case PArray(array)  :
+          [PTLSquareBracket].imm().concat(array.lfold(
+            (next:PExpr<T>,memo:Cluster<PToken<Either<String,T>>>) -> {
+              return memo.concat(rec(next));
+            },
+            [].imm()
+          )).snoc(PTRSquareBracket);
+        case PValue(value)  : [PTData(Right(value))];
+        case PEmpty         : [PTLParen,PTRParen];
+        case PAssoc(map)    : [PTLBracket].imm().concat(
+          map.lfold(
+            (next:Tup2<PExpr<T>,PExpr<T>>,memo:Cluster<PToken<Either<String,T>>>) -> {
+              return switch(next){
+                case tuple2(l,r) : memo.concat(rec(l).concat(rec(r)));
+              }
+            },
+            [].imm()
+          )
+        ).snoc(PTRBracket);
+        case PSet(arr)      : [PTHashLBracket].imm().concat(
+          arr.lfold(
+            (next:PExpr<T>,memo:Cluster<PToken<Either<String,T>>>) -> {
+              return memo.concat(rec(next));
+            },
+            [].imm()
+          )
+        ).snoc(PTRBracket);
+      }
+    }
+    return rec(self);
+  }
 }
-
 /**
-  case PLabel(name)    :
-        case PGroup(list)    :
-        case PValue(value)   : 
-        case PEmpty          : 
-**/
+```
+return switch(self){
+  case PLabel(name):
+  case PApply(name):
+  case PGroup(list):
+  case PArray(array):
+  case PValue(value):
+  case PEmpty:
+  case PAssoc(map):
+  case PSet(arr):
+}```
+*/
