@@ -15,5 +15,5 @@ class V2Test extends TestCase{
     ).load(provide)
      .submit();
   }
-  public function test(){}
+  public function test_again(){}
 }

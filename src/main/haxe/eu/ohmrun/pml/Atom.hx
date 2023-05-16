@@ -13,7 +13,7 @@ enum AtomSum{//Data, Eq, Show, Typeable)
 abstract Atom(AtomSum) from AtomSum to AtomSum{
   static public var _(default,never) = AtomLift;
   public function new(self) this = self;
-  static public function lift(self:AtomSum):Atom return new Atom(self);
+  @:noUsing static public function lift(self:AtomSum):Atom return new Atom(self);
 
   
 
@@ -31,6 +31,10 @@ class AtomLift{
       case Nul                : '';
     }
   }
+  /**
+   * Produce a Primitive from an Atom.
+   * @param self 
+   */
   static public function toPrimitive(self:Atom){
     return switch(self){
       case AnSym(s)           : Primate(PSprig(Textal(s)));

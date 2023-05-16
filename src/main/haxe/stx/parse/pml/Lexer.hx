@@ -40,9 +40,9 @@ class Lexer{
       (x) -> PTData(Str(x))
     ).tagged('string');
 
-  static public var k_bool        = '(true|false)'.reg()
+  static public var k_bool        = '^(true|false)\\s*$'.reg()
     .then(
-      (x) -> PTData(B(x == "true" ? true : false))
+      (x) -> PTData(B(__.tracer()(x) == "true" ? true : false))
     ).tagged('bool');
       
   static public var k_atom        = "[^ \r\t\n\\(\\)]+".reg()

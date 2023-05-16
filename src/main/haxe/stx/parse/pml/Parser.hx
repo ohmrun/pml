@@ -32,10 +32,10 @@ class Parser{
   public function val(){
     return stx.parse.Parsers.Choose(
       (t:Token) -> switch(t){
-        case PTData(AnSym(s)) if (s.startsWith(":")) : Some(PLabel(s.substr(1)));
-        case PTData(atm)                             : Some(PValue(atm));
-        case null                                   : None;
-        default                                     : None;
+        case PTData(AnSym(s)) if (s.startsWith(":"))  : Some(PLabel(s.substr(1)));
+        case PTData(atm)                              : Some(PValue(atm));
+        case null                                     : None;
+        default                                       : None;
       }
     ).tagged('val');
   }
@@ -51,21 +51,21 @@ class Parser{
       map_p(),
       val(),
       list_p()
-    ].ors().tagged("expr");
+    ].ors();
   }
   public function map_p(){
-    return lbracket_p()._and(map_item_p().many()).and_(rbracket_p()).then(PAssoc);
+    return lbracket_p()._and(map_item_p().many()).and_(rbracket_p()).then(PAssoc).tagged("map_p");
   }
   public function map_item_p(){
-    return expr_p.cache().and(expr_p.cache()).then(__.decouple(tuple2));
+    return expr_p.cache().and(expr_p.cache()).then(__.decouple(tuple2)).tagged("map_item_p");
   }
   public function list_p():stx.parse.Parser<Token,PExpr<Atom>>{
-    return bracketed(expr_p.cache().tagged('expr').many().tagged('exprs')).tagged('list');
+    return bracketed(expr_p.cache().tagged('expr').many().tagged('exprs'));
   }
   public function set_p(){
     return hash_lbracket_p()._and(expr_p.cache().many()).and_(rbracket_p()).then(
       (arr) -> PSet(arr)
-    );
+    ).tagged("set_p");
   }
   private function bracketed(p:stx.parse.Parser<Token,Cluster<PExpr<Atom>>>):stx.parse.Parser<Token,PExpr<Atom>>{
     return lparen_p()._and(p).and_(rparen_p()).then(
