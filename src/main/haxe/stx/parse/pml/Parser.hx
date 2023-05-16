@@ -49,6 +49,7 @@ class Parser{
     return [
       set_p(),
       map_p(),
+      array_p(),
       val(),
       list_p()
     ].ors();
@@ -60,22 +61,22 @@ class Parser{
     return expr_p.cache().and(expr_p.cache()).then(__.decouple(tuple2)).tagged("map_item_p");
   }
   public function list_p():stx.parse.Parser<Token,PExpr<Atom>>{
-    return bracketed(expr_p.cache().tagged('expr').many().tagged('exprs'));
+    return parenthesized(expr_p.cache().tagged('expr').many().tagged('exprs'));
   }
   public function set_p(){
     return hash_lbracket_p()._and(expr_p.cache().many()).and_(rbracket_p()).then(
       (arr) -> PSet(arr)
     ).tagged("set_p");
   }
-  private function bracketed(p:stx.parse.Parser<Token,Cluster<PExpr<Atom>>>):stx.parse.Parser<Token,PExpr<Atom>>{
+  private function parenthesized(p:stx.parse.Parser<Token,Cluster<PExpr<Atom>>>):stx.parse.Parser<Token,PExpr<Atom>>{
     return lparen_p()._and(p).and_(rparen_p()).then(
       (arr:Cluster<PExpr<Atom>>) -> {
         return PGroup(arr.toLinkedList());
       }
     );
   }
-  private function square_bracketed(p:stx.parse.Parser<Token,Cluster<PExpr<Atom>>>):stx.parse.Parser<Token,PExpr<Atom>>{
-    return l_square_bracket_p()._and(p).and_(r_square_bracket_p()).then(
+  private function array_p():stx.parse.Parser<Token,PExpr<Atom>>{
+    return l_square_bracket_p()._and(expr_p.cache().many()).and_(r_square_bracket_p()).then(
       (arr:Cluster<PExpr<Atom>>) -> {
         return PArray(arr);
       }
