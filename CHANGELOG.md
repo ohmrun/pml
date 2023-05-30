@@ -1,6 +1,12 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+### Fix
+- hook up array parser
+
+### Repo
+- CHANGELOG related
+
 
 <a name="v0.5.0"></a>
 ## [v0.5.0] - 2023-05-10

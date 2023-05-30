@@ -45,4 +45,14 @@ class AtomLift{
       case Nul                : Unknown;
     }
   }
+  static public function fromPrimitive(self:Primitive){
+    return switch(self){
+      case PSprig(Textal(s))            : AnSym(s);
+      case PBool(b)                     : B(b);
+      case PSprig(Byteal(NFloat(fl)))   : N(KLFloat(fl));
+      case PSprig(Byteal(NInt64(fl)))   : throw "64 bit unhandled here"; Nul;
+      case PSprig(Byteal(NInt(fl)))     : N(KLInt(fl));
+      case PNull                        : Nul;
+    }
+  }
 }
