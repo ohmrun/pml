@@ -265,6 +265,118 @@ class PExprLift{
     }
     return rec(self);
   }
+  static public function index<T>(self:PExpr<T>){
+    return switch(self){
+      case PLabel(name)   : [CoIndex(0)];
+      case PApply(name)   : [CoIndex(0)];
+      case PGroup(list)   : list.toCluster().imap(
+        (idx,val) -> {
+          return CoIndex(idx);
+        }
+      );
+      case PArray(array)  : array.imap(
+        (idx,val) -> CoIndex(idx)
+      );
+      case PValue(value)  : [CoIndex(0)];
+      case PEmpty         : [];
+      case PAssoc(map)    : is_label_map(self).if_else(
+        () -> map.imap(
+          (i,x) -> CoField(x.fst().get_label().fudge(),i)
+        ),
+        () -> map.imap(
+          (i,x) -> CoIndex(i)
+        )
+      );
+      case PSet(arr)      : arr.imap(
+        (i,_) -> CoIndex(i)
+      );
+    }
+  }
+  static public function access<T>(self:PExpr<T>,key:Coord):Option<PExpr<T>>{
+    return switch([self,key]){
+      case [PLabel(name),CoIndex(0)]    : __.option(self);
+      case [PApply(name),CoIndex(0)]    : __.option(self);
+      case [PGroup(list),CoIndex(i)]    : __.option(list.toCluster()[i]);
+      case [PArray(array),CoIndex(i)]   : __.option(array[i]);
+      case [PValue(name),CoIndex(0)]    : __.option(self);
+      case [PEmpty,CoIndex(0)]          : __.option(self);
+      case [PAssoc(map),CoIndex(i)]     : __.option(map[i]).map(x -> x.snd());
+      case [PAssoc(map),CoField(s,null)]: 
+        map.search(
+          x -> x.fst().get_label().map(
+            sI -> sI == s
+          ).defv(false)
+        ).map(x -> x.snd());
+      case [PAssoc(map),CoField(s,i)]   : __.option(map[i]).flat_map(
+        x -> (x.fst().get_label().map(x -> x == s).defv(false)).if_else(
+          () -> __.option(x.snd()),
+          () -> __.option()
+        )
+      );
+      case [PSet(arr),CoIndex(i)]       : __.option(arr[i]);
+      default                           : __.option();
+    }
+  }
+  static public function members<T>(self:PExpr<T>):Cluster<Tup2<Coord,PExpr<T>>>{
+    return switch(self){
+      case PLabel(name)   : [tuple2(CoIndex(0),self)];
+      case PApply(name)   : [tuple2(CoIndex(0),self)];
+      case PGroup(list)   : list.toCluster().imap(
+        (idx,val) -> {
+          return tuple2(CoIndex(idx),val);
+        }
+      );
+      case PArray(array)  : array.imap(
+        (idx,val) -> tuple2(CoIndex(idx),val)
+      );
+      case PValue(value)  : [tuple2(CoIndex(0),self)];
+      case PEmpty         : [];
+      case PAssoc(map)    : is_label_map(self).if_else(
+        () -> map.imap(
+          (i,x) -> tuple2(CoField(x.fst().get_label().fudge(),i),x.snd())
+        ),
+        () -> map.imap(
+          (i,x) -> tuple2(CoIndex(i),x.snd())
+        )
+      );
+      case PSet(arr)      : arr.imap(
+        (i,x) -> tuple2(CoIndex(i),x)
+      );
+    }
+  }
+  static public function is_label_map<T>(self:PExpr<T>){
+    return switch(self){
+      case PAssoc(map) : map.all(
+        (tup) -> switch(tup.fst()){
+          case PLabel(_) : true;
+          default        : false;
+        }
+      );
+      default : false;
+    }
+  }
+  static public function get_label<T>(self:PExpr<T>){
+    return switch(self){
+      case PLabel(str) : __.option(str);
+      default          : __.option();
+    }
+  }
+  static public function mod<T,U>(self:PExpr<T>,fn:PExpr<T> -> PExpr<U>):PExpr<U>{
+    return switch(self){
+      case PLabel(name)     : fn(self);
+      case PApply(name)     : fn(self);
+      case PGroup(list)     : PGroup(list.map(fn));
+      case PArray(array)    : PArray(array.map(fn));
+      case PValue(value)    : fn(self);
+      case PEmpty           : fn(self);
+      case PAssoc(map)      : PAssoc(map.map(
+        (tup) -> tup.detuple(
+          (l,r) -> tuple2(fn(l),fn(r))
+        )
+      ));
+      case PSet(arr)        : PSet(arr.map(fn));
+    }
+  }
 }
 /**
 ```

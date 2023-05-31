@@ -26,7 +26,7 @@ class AtomLift{
     return switch(self){
       case AnSym(s)           : '${s}';
       case B(b)               : Std.string(b);
-      case N(fl)              : Std.string(fl);
+      case N(fl)              : fl.toString();
       case Str(str)           : '$str';
       case Nul                : '';
     }

@@ -45,7 +45,7 @@ class Lexer{
       (x) -> PTData(B(__.tracer()(x) == "true" ? true : false))
     ).tagged('bool');
       
-  static public var k_atom        = "[^ \r\t\n\\(\\)]+".reg()
+  static public var k_atom        = "[^ {}\\[\\],\r\t\n\\(\\)]+".reg()
     .then(
       (x:String) -> PTData(AnSym((x:Symbol)))
     ).tagged('atom');
@@ -64,10 +64,11 @@ class Lexer{
         k_float,
         k_string,
         k_bool,
+        ",".id().and_then(_ -> Parsers.Nothing()),
         k_atom,
       ].ors()
       ).one_many()
-       .and_(whitespace.many())
+       .and_(whitespace.or(','.id()).many())
        .and_(Parsers.Eof())
   );
   static function print_ipt(ipt){
