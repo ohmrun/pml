@@ -377,6 +377,42 @@ class PExprLift{
       case PSet(arr)        : PSet(arr.map(fn));
     }
   }
+  static public function is_array<T>(self:PExpr<T>){
+    return switch (self){
+      case PArray(_) : true;
+      default : false;
+    }
+  }
+  static public function is_set<T>(self:PExpr<T>){
+    return switch (self){
+      case PSet(_) : true;
+      default : false;
+    }
+  }
+  static public function is_group<T>(self:PExpr<T>){
+    return switch (self){
+      case PGroup(_) : true;
+      default : false;
+    }
+  }
+  static public function is_assoc<T>(self:PExpr<T>){
+    return switch (self){
+      case PAssoc(_) : true;
+      default : false;
+    }
+  }
+  static public function is_leaf<T>(self:PExpr<T>){
+    return switch(self){
+      case PLabel(name)     : true;
+      case PApply(name)     : true;
+      case PGroup(list)     : false;
+      case PArray(array)    : false;
+      case PValue(value)    : true;
+      case PEmpty           : true;
+      case PAssoc(map)      : false;
+      case PSet(arr)        : false;    
+    }
+  }
 }
 /**
 ```

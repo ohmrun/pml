@@ -30,6 +30,10 @@ typedef PToken<T>       = eu.ohmrun.pml.PToken<T>;
 typedef Token           = eu.ohmrun.pml.Token;
 typedef PExprSum<T>     = eu.ohmrun.pml.PExpr.PExprSum<T>;
 typedef PExpr<T>        = eu.ohmrun.pml.PExpr<T>;
+typedef PListKind       = eu.ohmrun.pml.PListKind;
+typedef PItemKind       = eu.ohmrun.pml.PItemKind;
+typedef PAggregateKind  = eu.ohmrun.pml.PAggregateKind;
+typedef PType           = eu.ohmrun.pml.PType;
 
 typedef PmlFailure    = stx.fail.PmlFailure;
 typedef PmlFailureSum = stx.fail.PmlFailure.PmlFailureSum;

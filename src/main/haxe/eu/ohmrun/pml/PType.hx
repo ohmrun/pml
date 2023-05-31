@@ -1,15 +1,23 @@
 package eu.ohmrun.pml;
 
-enum PType<T>{
-  PTNil;
-  PTAny;
-  PTVal(v:T);
-  PTTag(id:String,apply:Option<Bool>);
-  PTGrp(t:PType<T>);
-  PTOpt(t:PType<T>);
-  PTMap(key:PType<T>,val:PType<T>);
-  PTObj(arr:Cluster<Tup2<String,PType<T>>>);
-  PTAlt(types:Cluster<PType<T>>);
+enum PTypeSum{
+  PTItem(kind:PItemKind);
+  PTAgg(agg:PAggregateKind,rest:PType);
+}
+@:using(eu.ohmrun.pml.PType.PTypeLift)
+abstract PType(PTypeSum) from PTypeSum to PTypeSum{
+  static public var _(default,never) = PTypeLift;
+  public inline function new(self:PTypeSum) this = self;
+  @:noUsing static inline public function lift(self:PTypeSum):PType return new PType(self);
+
+  public function prj():PTypeSum return this;
+  private var self(get,never):PType;
+  private function get_self():PType return lift(this);
+}
+class PTypeLift{
+  static public inline function lift(self:PTypeSum):PType{
+    return PType.lift(self);
+  }
 }
 // interface PmlKindApi<P,R>{
 //   public function nil():R;
