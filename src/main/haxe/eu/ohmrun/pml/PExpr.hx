@@ -377,6 +377,65 @@ class PExprLift{
       case PSet(arr)        : PSet(arr.map(fn));
     }
   }
+  static public function refine<T>(self:PExpr<T>,fn:Either<Coord,PExpr<T>>->PExpr<T>->Bool):PExpr<T>{
+    return switch(self){
+      case PGroup(list)     : PGroup(
+        list.imap(
+          (i,x) -> {
+            return fn(Left(Coord.make(null,i)),x).if_else(
+              () -> Some(x),
+              () -> None
+            );
+          }
+        ).map_filter(
+          x -> x
+        )
+      );
+      case PArray(array)    : PArray(
+        array.imap(
+          (i,x) -> {
+            return fn(Left(Coord.make(null,i)),x).if_else(
+              () -> Some(x),
+              () -> None
+            );
+          }
+        ).map_filter(
+          x -> x
+        )
+      );
+      case PAssoc(map)      : 
+        final are_labels = self.is_label_map();
+        PAssoc(
+          map.imap(
+            (idx,tup) -> tup.detuple(
+              (l,r) -> {
+                final lhs = are_labels.if_else(
+                  () -> Left(Coord.make(l.get_label().fudge(),idx)),
+                  () -> Right(l)
+                );
+                return fn(lhs,r).if_else(
+                  () -> Some(tup),
+                  () -> None
+                );
+              }
+            )
+          ).map_filter(x -> x)
+        );
+      case PSet(arr)        : PSet(
+        arr.imap(
+          (i,x) -> {
+            return fn(Left(Coord.make(null,i)),x).if_else(
+              () -> Some(x),
+              () -> None
+            );
+          }
+        ).map_filter(
+          x -> x
+        )
+      );
+      default               : self;
+    }
+  }
   static public function is_array<T>(self:PExpr<T>){
     return switch (self){
       case PArray(_) : true;
