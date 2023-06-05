@@ -1,6 +1,10 @@
 package stx.fail;
 
+using eu.ohmrun.Pml;
+
 enum PmlFailureSum{
+  E_Pml(s:String);
+  E_Pml_CannotMix<T>(l:PExpr<T>,r:PExpr<T>,?of:String);
   E_Pml_Nada;
   E_Pml_Empty;
   E_Pml_Parse(f:ParseFailure);

@@ -1,14 +1,19 @@
 package eu.ohmrun.pml;
 
 enum PExprSum<T>{
+  PEmpty;
   PLabel(name:String);
   PApply(name:String);
+  PValue(value:T);
+
   PGroup(list:LinkedList<PExpr<T>>);
   PArray(array:Cluster<PExpr<T>>);
-  PValue(value:T);
-  PEmpty;
-  PAssoc(map:Cluster<Tup2<PExpr<T>,PExpr<T>>>);
+  /**
+   * This is not typed as a set because sets require equalities that can't universally be inferred.
+   */
   PSet(arr:Cluster<PExpr<T>>);
+  PAssoc(map:Cluster<Tup2<PExpr<T>,PExpr<T>>>);
+  
 }
 @:using(eu.ohmrun.pml.PExpr.PExprLift)
 abstract PExpr<T>(PExprSum<T>) from PExprSum<T> to PExprSum<T>{
@@ -181,24 +186,6 @@ abstract PExpr<T>(PExprSum<T>) from PExprSum<T> to PExprSum<T>{
   }
 }
 class PExprLift{
-  //TODO any rescueing map given the typing?
-  // static public function map<T,TT>(expr:PExpr<T>,fn:T->TT):PExpr<TT>{
-  //   return switch expr {
-  //     case PLabel(name)      : PLabel(name);
-  //     case PGroup(list)      : PGroup(list.map(e -> e.map(fn)));
-  //     case PValue(value)     : PValue(fn(value));
-  //     case PAssoc(map)       : 
-  //     final next = RedBlackMap.make(map.with);
-  //     for(key => val in map){
-  //       next.set(map())
-  //     }  
-  //     PAssoc(
-
-        
-  //     );
-  //     case PEmpty            : PEmpty;
-  //   }
-  // }
   static public function eq<T>(inner:Eq<T>):Eq<PExpr<T>>{
     return new stx.assert.pml.eq.PExpr(inner);
   }
@@ -472,17 +459,55 @@ class PExprLift{
       case PSet(arr)        : false;    
     }
   }
+  /**
+   * Mixes structurally compatible values 
+   * @param self 
+   * @param that 
+   */
+  static public function mix<T>(self:PExpr<T>,that:PExpr<T>){
+    return switch([self,that]){
+      case [PEmpty,PEmpty]                  : __.accept(PEmpty);
+      case [PGroup(listI),PGroup(listII)]   : __.accept(PGroup(listI.concat(listII)));
+      case [PArray(arrayI),PArray(arrayII)] : __.accept(PArray(arrayI.concat(arrayII)));
+      case [PAssoc(mapI),PAssoc(mapII)]     : __.accept(PAssoc(mapI.concat(mapII)));
+      case [PSet(setI),PSet(setII)]         : __.accept(PSet(setI.concat(setII)));
+      case [null,x]                         : __.accept(x);
+      case [PEmpty,x]                       : __.accept(x);
+      case [x,null]                         : __.accept(x);
+      case [x,PEmpty]                       : __.accept(x);
+      default                               : __.reject(__.fault().of(stx.fail.PmlFailure.PmlFailureSum.E_Pml_CannotMix(self,that)));
+    }
+  }   
+  static public function head<T>(self:PExpr<T>){
+    return switch(self){
+      case PGroup(listI)  : __.option(listI.head());
+      case PArray(arrayI) : arrayI.head();
+      case PSet(setI)     : setI.head();
+      default             : __.option();
+    }
+  }
+  static public function insert<T>(self:PExpr<T>,v:PExpr<T>,?k:PExpr<T>):Upshot<PExpr<T>,PmlFailure>{
+    return switch([self,v,k]){
+      case [PArray(xs),v,null]  : __.accept(PArray(xs.snoc(v)));
+      case [PGroup(xs),v,null]  : __.accept(PGroup(xs.snoc(v)));
+      case [PSet(xs),v,null]    : __.accept(PSet(xs.snoc(v)));
+      case [PAssoc(xs),v,k]     : __.accept(PAssoc(xs.snoc(tuple2(k,v))));
+      default                   : __.reject(f -> f.of(E_Pml_CannotMix(self,PGroup(Cons(k,Cons(v,Nil))))));
+    }
+  }
 }
 /**
 ```
 return switch(self){
+  case PEmpty:
   case PLabel(name):
   case PApply(name):
+  case PValue(value):
+
   case PGroup(list):
   case PArray(array):
-  case PValue(value):
-  case PEmpty:
-  case PAssoc(map):
   case PSet(arr):
+  case PAssoc(map):
+  
 }```
 */

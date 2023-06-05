@@ -2,6 +2,8 @@ package stx.assert.pml.ord;
 
 import eu.ohmrun.Pml.PExpr in PExprT;
 
+final Ord = __.assert().Ord();
+
 class PExpr<T> extends OrdCls<PExprT<T>>{
   var inner : Ord<T>;
   public function new(inner){
@@ -19,6 +21,8 @@ class PExpr<T> extends OrdCls<PExprT<T>>{
           NotLessThan
         );
       case [PValue(lhs),PValue(rhs)]      : inner.comply(lhs,rhs);
+      case [PAssoc(lhs),PAssoc(rhs)]      : Ord.Cluster(Ord.Tup2(this,this)).comply(lhs,rhs);
+      case [PSet(lhs),PSet(rhs)]          : Ord.Cluster(this).comply(lhs,rhs);
       case [PEmpty,PEmpty]                : NotLessThan;
       case [null, null]                   : NotLessThan;
       case [null,_]                       : LessThan;

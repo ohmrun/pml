@@ -1,8 +1,8 @@
 package eu.ohmrun.pml;
 
 enum NumSum{
-  KLFloat(fl:Float);
   KLInt(int:Int);
+  KLFloat(fl:Float);
 }
 
 @:using(eu.ohmrun.pml.Num.NumLift)

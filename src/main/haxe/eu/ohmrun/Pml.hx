@@ -35,5 +35,9 @@ typedef PItemKind       = eu.ohmrun.pml.PItemKind;
 typedef PAggregateKind  = eu.ohmrun.pml.PAggregateKind;
 typedef PType           = eu.ohmrun.pml.PType;
 
-typedef PmlFailure    = stx.fail.PmlFailure;
-typedef PmlFailureSum = stx.fail.PmlFailure.PmlFailureSum;
+typedef PmlFailure      = stx.fail.PmlFailure;
+typedef PmlFailureSum   = stx.fail.PmlFailure.PmlFailureSum;
+
+typedef EqCtr           = stx.assert.pml.EqCtr;
+typedef OrdCtr          = stx.assert.pml.OrdCtr;
+typedef ComparableCtr   = stx.assert.pml.ComparableCtr;
