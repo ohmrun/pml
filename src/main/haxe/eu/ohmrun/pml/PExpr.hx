@@ -13,7 +13,6 @@ enum PExprSum<T>{
    */
   PSet(arr:Cluster<PExpr<T>>);
   PAssoc(map:Cluster<Tup2<PExpr<T>,PExpr<T>>>);
-  
 }
 @:using(eu.ohmrun.pml.PExpr.PExprLift)
 abstract PExpr<T>(PExprSum<T>) from PExprSum<T> to PExprSum<T>{
@@ -252,7 +251,7 @@ class PExprLift{
     }
     return rec(self);
   }
-  static public function index<T>(self:PExpr<T>){
+  static public function labels<T>(self:PExpr<T>):Cluster<Coord>{
     return switch(self){
       case PLabel(name)   : [CoIndex(0)];
       case PApply(name)   : [CoIndex(0)];
@@ -459,25 +458,7 @@ class PExprLift{
       case PSet(arr)        : false;    
     }
   }
-  /**
-   * Mixes structurally compatible values 
-   * @param self 
-   * @param that 
-   */
-  static public function mix<T>(self:PExpr<T>,that:PExpr<T>){
-    return switch([self,that]){
-      case [PEmpty,PEmpty]                  : __.accept(PEmpty);
-      case [PGroup(listI),PGroup(listII)]   : __.accept(PGroup(listI.concat(listII)));
-      case [PArray(arrayI),PArray(arrayII)] : __.accept(PArray(arrayI.concat(arrayII)));
-      case [PAssoc(mapI),PAssoc(mapII)]     : __.accept(PAssoc(mapI.concat(mapII)));
-      case [PSet(setI),PSet(setII)]         : __.accept(PSet(setI.concat(setII)));
-      case [null,x]                         : __.accept(x);
-      case [PEmpty,x]                       : __.accept(x);
-      case [x,null]                         : __.accept(x);
-      case [x,PEmpty]                       : __.accept(x);
-      default                               : __.reject(__.fault().of(stx.fail.PmlFailure.PmlFailureSum.E_Pml_CannotMix(self,that)));
-    }
-  }   
+     
   static public function head<T>(self:PExpr<T>){
     return switch(self){
       case PGroup(listI)  : __.option(listI.head());
@@ -486,18 +467,191 @@ class PExprLift{
       default             : __.option();
     }
   }
-  static public function insert<T>(self:PExpr<T>,v:PExpr<T>,?k:PExpr<T>):Upshot<PExpr<T>,PmlFailure>{
-    return switch([self,v,k]){
-      case [PArray(xs),v,null]  : __.accept(PArray(xs.snoc(v)));
-      case [PGroup(xs),v,null]  : __.accept(PGroup(xs.snoc(v)));
-      case [PSet(xs),v,null]    : __.accept(PSet(xs.snoc(v)));
-      case [PAssoc(xs),v,k]     : __.accept(PAssoc(xs.snoc(tuple2(k,v))));
-      default                   : __.reject(f -> f.of(E_Pml_CannotMix(self,PGroup(Cons(k,Cons(v,Nil))))));
+  static public function size<T>(self:PExpr<T>):Int{
+    return switch(self){
+      case PEmpty         : 0;
+      case PLabel(name)   : 1;
+      case PApply(name)   : 1;
+      case PValue(value)  : 1;
+    
+      case PGroup(list)   : list.size();
+      case PArray(array)  : array.size();
+      case PSet(arr)      : arr.size();
+      case PAssoc(map)    : map.size();
     }
+  }
+  @:noUsing static public function ingeminate<T>(self:PExpr<T>,fn:Int -> Option<PExpr<T>> -> PExpr<T> -> Upshot<Option<PExpr<T>>,PmlFailure>):Upshot<PExpr<T>,PmlFailure>{
+    return switch(self){
+      case PGroup(list)   : 
+        Upshot.bind_fold(
+          list.rfold((n,m:LinkedList<PExpr<T>>) -> m.cons(n),LinkedList.unit()),
+          (next:PExpr<T>,memo:{ step : Int, data : LinkedList<PExpr<T>>}) -> {
+            return fn(memo.step,None,next).map(
+              (x) -> x.fold(y -> memo.data.cons(y), () -> memo.data)
+            ).map(
+              data -> { step : memo.step + 1, data : data}
+            );
+          },
+          { step : 0, data : LinkedList.unit() }
+        ).map(x -> PGroup(x.data));
+      case PArray(array)  : 
+        Upshot.bind_fold(
+          array,
+          (next:PExpr<T>,memo:{ step : Int, data : Cluster<PExpr<T>>}) -> {
+            return fn(memo.step,None,next).map(
+              (x) -> x.fold(y -> memo.data.snoc(y), () -> memo.data)
+            ).map(
+              data -> { step : memo.step + 1, data : data }
+            );
+          },
+          { step : 0, data : [].imm() }
+        ).map(x -> PArray(x.data));
+      case PSet(arr)      : 
+        Upshot.bind_fold(
+          arr,
+          (next:PExpr<T>,memo:{ step : Int, data : Cluster<PExpr<T>>}) -> {
+            return fn(memo.step,None,next).map(
+              (x) -> x.fold(y -> memo.data.snoc(y), () -> memo.data)
+            ).map(
+              data -> { step : memo.step + 1, data : data }
+            );
+          },
+          { step : 0, data : [].imm() }
+        ).map(x -> PSet(x.data));
+      case PAssoc(map)    : 
+        Upshot.bind_fold(
+          map,
+          (next:Tup2<PExpr<T>,PExpr<T>>,memo:{ step : Int, data : Cluster<Tup2<PExpr<T>,PExpr<T>>>}) -> {
+            return fn(memo.step,__.option(next.fst()),next.snd()).map(
+              (x) -> x.fold(y -> memo.data.snoc(tuple2(next.fst(),y)), () -> memo.data)
+            ).map(
+              data -> { step : memo.step + 1, data : data }
+            );
+          },
+          { step : 0, data : [].imm() }
+        ).map(x-> PAssoc(x.data));
+      default             : __.accept(self);
+    }
+  }
+  static public function any<T>(self:PExpr<T>,fn:PExpr<T> -> Bool):Upshot<Bool,PmlFailure>{
+    final res = [];
+    return ingeminate(
+      self,
+      (_,_,p) -> {
+        res.push(fn(p));
+        return __.accept(None);
+      }
+    ).map(
+      (_) -> {
+        return res.lfold(
+          (n,m) -> if(m){m;
+          }else{n;},
+          false
+        );
+      }
+    );
+  }
+  static public function all<T>(self:PExpr<T>,fn:PExpr<T> -> Bool):Upshot<Bool,PmlFailure>{
+    final res = [];
+    return ingeminate(
+      self,
+      (_,_,p) -> {
+        res.push(fn(p));
+        return __.accept(None);
+      }
+    ).map(
+      (_) -> {
+        return res.lfold(
+          (n,m) -> if(m){ m && n; }else{ m; },
+          true
+        );
+      }
+    );
+  }
+  static public function signature<T>(self:PExpr<T>):PSignature{
+    function has_consistent_types(next:Option<PSignature>,memo:Option<PSignature>){
+      return memo.fold(
+        (t) -> EqCtr.pml(STX).PSignature.comply(next.fudge(),t).is_ok().if_else(
+          () -> memo,
+          () -> None
+        ),
+        ()  -> None
+      );
+    }
+    function get_chain_type(cls:Cluster<PExpr<T>>,t:PChainKind){
+      final types                 = cls.map(signature);
+      final has_consistent_types  = types.tail().map(Some).lscan(
+          has_consistent_types,
+          types.head()
+        ).lfold(
+          (next:Option<PSignature>,memo:Bool) -> memo.if_else(
+            () -> next.is_defined(),
+            () -> false
+          ),
+          true
+        );
+
+        return has_consistent_types.if_else(
+          () -> PSigBattery(OneOf(types.head().fudge()),t),
+          () -> PSigBattery(ManyOf(types),t)
+        );
+      }
+    
+    return switch(self){
+      case PEmpty         : PSigPrimate(PItmEmpty);
+      case PLabel(name)   : PSigPrimate(PItmLabel);
+      case PApply(name)   : PSigPrimate(PItmApply);
+      case PValue(value)  : PSigPrimate(PItmValue);
+      case PAssoc(list)   : 
+        final types : Cluster<Tup2<PSignature,PSignature>> = list.map(
+          __.detuple((l,r) -> tuple2(signature(l),signature(r)))
+        );
+        final has_consistent_keys = types.tail().map(x -> Some(x.fst())).lscan(
+          has_consistent_types,
+          types.head().map(x -> x.fst())
+        ).lfold(
+          (next:Option<PSignature>,memo:Bool) -> memo.if_else(
+            () -> next.is_defined(),
+            () -> false
+          ),
+          true
+        );
+        
+        final consistent_key = has_consistent_keys.if_else(
+          () -> types.head().map(x -> x.fst()),
+          () -> None
+        );
+        final has_consistent_vals = types.tail().map(x -> Some(x.snd())).lscan(
+          has_consistent_types,
+          types.head().map(x -> x.snd())
+        ).lfold(
+          (next:Option<PSignature>,memo:Bool) -> memo.if_else(
+            () -> next.is_defined(),
+            () -> false
+          ),
+          true
+        );
+
+        final consistent_val = has_consistent_vals.if_else(
+          () -> types.head().map(x -> x.snd()),
+          () -> None
+        );
+        has_consistent_keys.if_else(
+          () -> has_consistent_vals.if_else(
+            () -> PSigCollate(consistent_key.fudge(),OneOf(consistent_val.fudge())),
+            () -> PSigCollate(consistent_key.fudge(),ManyOf(types.map(x -> x.snd()))),
+          ),
+          () -> PSigOutline(types)
+        );
+      case PArray(array)  : get_chain_type(array,PCArray);
+      case PSet(arr)      : get_chain_type(arr,PCSet);
+      case PGroup(list)   : get_chain_type(list.toCluster(),PCSet);
+    }  
   }
 }
 /**
 ```
+
 return switch(self){
   case PEmpty:
   case PLabel(name):

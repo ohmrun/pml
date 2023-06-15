@@ -2,6 +2,7 @@ package eu.ohmrun.pml;
 
 import stx.om.Spine;
 
+@:using(eu.ohmrun.pml.Atom.AtomLift)
 enum AtomSum{//Data, Eq, Show, Typeable)
   AnSym(s:Symbol);
   B(b:Bool);
