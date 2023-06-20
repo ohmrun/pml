@@ -197,14 +197,6 @@ class PExprLift {
 			case PSet(arr)				: false;
 		}
 	}
-	static public function head<T>(self:PExpr<T>) {
-		return switch (self) {
-			case PGroup(listI) 		: __.option(listI.head());
-			case PArray(arrayI) 	: arrayI.head();
-			case PSet(setI)				: setI.head();
-			default 							: __.option();
-		}
-	}
 	static public function size<T>(self:PExpr<T>):Int {
 		return switch (self) {
 			case PEmpty 					: 0;

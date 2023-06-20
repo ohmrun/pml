@@ -9,7 +9,7 @@ class Signature{
 				.if_else(() -> memo, () -> None), () -> None);
 		}
 		function get_chain_type(cls:Cluster<PExpr<T>>, t:PChainKind) {
-			final types = cls.map(signature);
+			final types = cls.map(x -> signature(x));
 			final has_consistent_types = types.tail()
 				.map(Some)
 				.lscan(has_consistent_types, types.head())

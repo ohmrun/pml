@@ -1,6 +1,12 @@
 package eu.ohmrun.pml.pexpr;
 
 class Mod{
+  /**
+   * runs fn on the first layer of subexpressions only, adds anything `Accept(Some(x))`, shortcuts on `Reject(x)`
+   * @param self 
+   * @param fn 
+   * @param PmlFailure> 
+   */
   static public function mod<T>(self:PExpr<T>, fn:PExpr<T>->Upshot<Option<PExpr<T>>,PmlFailure>) {
 		return switch(self){
 			case 			PGroup(list)		: Upshot.bind_fold(
