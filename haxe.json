@@ -11,7 +11,8 @@
       "asset/test-2.pml@test2",
       "asset/haxe_cpl.pml@haxe_cpl",
       "asset/haxe_cpl_order.pml@haxe_cpl_order",
-      "asset/v2.pml@v2"
+      "asset/v2.pml@v2",
+      "asset/traversal.edn@traversal"
     ],
     "unit"  : {
       "--macro" : [

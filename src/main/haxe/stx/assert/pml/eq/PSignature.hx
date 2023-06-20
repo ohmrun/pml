@@ -12,8 +12,12 @@ class PSignature extends EqCls<TPSignature>{
     return switch([a,b]){
         case [PSigPrimate(kindI),PSigPrimate(kindII)] : 
           Eq.pml().PItemKind.comply(kindI,kindII);
-        case [PSigCollect(xI),PSigCollect(xII)]       :
-          comply(xI,xII);
+        case [PSigCollect(xI,chainI),PSigCollect(xII,chainII)]       :
+          var eq = comply(xI,xII);
+          if(eq.is_ok()){
+            eq = Eq.pml().PChainKind.comply(chainI,chainII);
+          }
+          eq;
         case [PSigCollate(keyI,valsI),PSigCollate(keyII,valsII)]       :
           var eq = comply(keyI,keyII);
           if(eq.is_ok()){

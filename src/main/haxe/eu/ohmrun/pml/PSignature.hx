@@ -2,8 +2,8 @@ package eu.ohmrun.pml;
 
 enum PSignature{
   PSigPrimate(p:PItemKind);
-  PSigCollect(c:PSignature);  
+  PSigCollect(c:PSignature,kind:PChainKind);  
   PSigCollate(key:PSignature,vals:OneOrMany<PSignature>);
   PSigOutline(arr:Cluster<Tup2<PSignature,PSignature>>);
-  PSigBattery(arr:OneOrMany<PSignature>,kind:PChainKind);
+  PSigBattery(arr:Cluster<PSignature>,kind:PChainKind);
 }

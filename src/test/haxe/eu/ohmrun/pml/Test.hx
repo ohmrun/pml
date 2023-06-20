@@ -15,9 +15,11 @@ class Test{
       logger -> logger.with_logic(
         logic -> logic.or(
           logic.tags(
-            ["stx/parse",
+            [
+            //"stx/parse",
              "eu/ohmrun/pml",
-             "stx/stream"]
+             //"stx/stream"
+            ]
           )
         )
       )
@@ -28,6 +30,7 @@ class Test{
           //log.level = BLANK;
 
     __.test().run([
+      new GeneralTraversalTest(),
       //new LexerTest(),
       //new ExtractTest(),
       //new V2Test(),
