@@ -237,6 +237,14 @@ class PExprLift {
 			)
 		);
 	}
+	static public function imod<T>(self:PExpr<T>,fn:Int->PExpr<T>->Upshot<Option<PExpr<T>>,PmlFailure>){
+		var i = 0;
+		return self.mod(
+			(p) -> {
+				return fn(i++,p);
+			}
+		);
+	}
 }
 /**
 	```

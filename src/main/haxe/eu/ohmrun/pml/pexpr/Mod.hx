@@ -60,34 +60,32 @@ class Mod{
 					opt -> opt.map(PSet)
 				);
 			case 			PAssoc(map)			:
-				(Upshot.bind_fold(
+				Upshot.bind_fold(
 					map,
 					function(next:Tup2<PExpr<T>,PExpr<T>>,memo:Option<Cluster<Tup2<PExpr<T>,PExpr<T>>>>){
 						return 
-							fn(next.fst())
-								.flat_map(
-									(x:Option<PExpr<T>>) -> 
-										fn(next.snd())
-											.map((y:Option<PExpr<T>>) -> (tuple2(x,y))))
-							.map(
-								__.detuple(
-									(x:Option<PExpr<T>>,y:Option<PExpr<T>>) -> 
-										x.zip(y).map(__.decouple(tuple2))
+							fn(PGroup(Cons(next.fst(),Cons(next.snd(),Nil))))
+							.flat_map(
+								(r:Option<PExpr<T>>) -> (r).fold(
+									ok -> switch(ok){
+										case PGroup(Cons(x,Cons(y,Nil))) : 
+											__.accept(Some(tuple2(x,y)));
+										default : 
+											__.reject(f -> f.of(E_Pml('must return PGroup(Cons(x,Cons(y,Nil)))')));
+									},
+									() -> __.accept(None)
 								)
 							).map(
-								(r:Option<Tup2<PExpr<T>,PExpr<T>>>) -> (r).flat_map(
-									ok -> 
-										memo.fold(
-											okI -> Some(okI.snoc(ok)),
-											() 	-> Some(Cluster.unit().snoc(ok))
-										)
+								opt -> memo.fold(
+									okI -> opt.map( ok -> okI.snoc(ok)),
+									() 	-> opt.map( ok -> Cluster.unit().snoc(ok))
 								)
 							);
-					}
-					,None
+					},
+					None
 				).map(
 					opt -> opt.map(PAssoc)
-				));
+				);
 			default   								: __.accept(__.option(self));
 		}
 	}
