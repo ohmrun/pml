@@ -245,6 +245,134 @@ class PExprLift {
 			}
 		);
 	}
+	static public function access<T>(self:PExpr<T>,coord:Coord){
+		var result = None;
+		imod(
+			self,
+			(int,e) -> {
+				return switch([coord,e]){
+					case [CoField(key,idx),PGroup(Cons(PLabel(x),Cons(y,Nil)))] if (self.is_assoc()) :
+						if(idx == null || (int == idx && idx != null)){
+							if(key == x){
+								result = Some(e);
+								__.accept(None);
+							}else{
+								__.accept(None);
+							}
+						}else{
+							__.accept(None);
+						}
+					case [CoIndex(i),_] if(i == int) :
+						result = Some(e);
+						__.accept(None);
+					default : 
+						__.accept(None);
+				}
+			}
+		);
+		return result;
+	}
+	static public function fold_layer<T,Z>(self:PExpr<T>,fn:PExpr<T> -> Z -> Z,z:Z):Upshot<Z,PmlFailure>{
+		return self.mod(
+			(x) -> {
+				z = fn(x,z);
+				return __.accept(None);
+			}
+		).map(_ -> z);
+	}
+	static public function any_layer<T>(self:PExpr<T>,fn:PExpr<T> -> Bool):Upshot<Bool,PmlFailure>{
+		return fold_layer(
+			self,
+			(n,m) -> m || fn(n),
+			false
+		);
+	}
+	static public function all_layer<T>(self:PExpr<T>,fn:PExpr<T> -> Bool):Upshot<Bool,PmlFailure>{
+		return fold_layer(
+			self,
+			(n,m) -> m && fn(n),
+			true
+		);
+	}
+	static public function filter<T>(self:PExpr<T>,fn:PExpr<T> -> Bool):Upshot<PExpr<T>,PmlFailure>{
+		return self.mod(
+			(e) -> {
+				return fn(e).if_else(
+					() -> __.accept(__.option(e)),
+					() -> __.accept(__.option())
+				);
+			}
+		).map(
+			opt -> opt.fold(
+				x	 -> x,
+				() -> self
+			)
+		);
+	}
+	static public function as_tuple2<T>(self:PExpr<T>):Option<Tup2<PExpr<T>,PExpr<T>>>{
+		return switch(self){
+			case PGroup(Cons(x,Cons(y,Nil)))  : Some(tuple2(x,y));
+			default 													: None;
+		}
+	}
+	static public function as_assoc<T>(self:Cluster<PExpr<T>>):Upshot<PExpr<T>,PmlFailure>{
+		return Upshot.bind_fold(
+			self,
+			(next:PExpr<T>,memo:Cluster<Tup2<PExpr<T>,PExpr<T>>>) -> {
+				return as_tuple2(next).fold(
+					ok -> __.accept(memo.snoc(ok)),
+					() -> __.reject(f -> f.of(E_Pml('no tuple2 of $next available')))
+				);
+			},
+			[].imm()
+		).map(PAssoc);
+	}
+	static public function assoc_label<T>(self:PExpr<T>){
+		return as_tuple2(self).flat_map(
+			x -> switch(x.fst()){
+				case PLabel(x) 	: __.option(x);
+				default 				: __.option();
+			}
+		);
+	}
+	static public function bind_fold_layer<T,Z>(self:PExpr<T>,fn:PExpr<T> -> Z -> Upshot<Z,PmlFailure>,z:Z):Upshot<Z,PmlFailure>{
+		var memo = __.accept(z);
+		return self.mod(
+			(x) -> {
+				memo 	= memo.flat_map(z -> fn(x,z));
+				return __.accept(None);
+			}
+		).flat_map(_ -> memo);
+	}
+	static public function refine<T>(self:PExpr<T>,fn:Coord -> PExpr<T> -> Upshot<Bool,PmlFailure>):Upshot<PExpr<T>,PmlFailure>{
+		var int = 0;
+		return bind_fold_layer(
+			self,
+			(next:PExpr<T>,memo:Cluster<PExpr<T>>) -> {
+				final coord = self.is_assoc().if_else(
+					() -> Coord.make(assoc_label(next).defv(null),int++),
+					() -> Coord.make(null,int++)
+				);
+				return fn(coord,next).map(
+					ok -> ok.if_else(
+						() -> memo.snoc(next),
+						() -> memo
+					)
+				);
+			},
+			[].imm()
+		).flat_map(
+			xs -> {
+				switch(self){
+					case PAssoc(_) : as_assoc(xs);
+					case PArray(_) : __.accept(PArray(xs));
+					case PGroup(_) : __.accept(PGroup(LinkedList.fromCluster(xs)));
+					case PSet(_) 	 : __.accept(PSet(xs));
+					default 			 : __.reject(f -> f.of(E_Pml('not a branch')));
+				}
+			}
+		);
+	}
 }
 /**
 	```
