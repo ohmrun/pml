@@ -61,4 +61,7 @@ class ToString{
 			}
 		})(self);
 	}
+	static public function toString<T>(self:PExpr<T>):String {
+		return toString_with(self,Std.string);
+	}
 }

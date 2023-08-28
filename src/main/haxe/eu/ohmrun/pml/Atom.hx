@@ -17,7 +17,6 @@ abstract Atom(AtomSum) from AtomSum to AtomSum{
   @:noUsing static public function lift(self:AtomSum):Atom return new Atom(self);
 
   
-
   public function prj():AtomSum return this;
   private var self(get,never):Atom;
   private function get_self():Atom return lift(this);

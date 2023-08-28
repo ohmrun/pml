@@ -65,9 +65,6 @@ abstract PExpr<T>(PExprSum<T>) from PExprSum<T> to PExprSum<T> {
 	private function get_self():PExpr<T>
 		return lift(this);
 
-	public function toString():String {
-		return this.toString_with(Std.string);
-	}
 }
 
 class PExprLift {
@@ -237,7 +234,7 @@ class PExprLift {
 			)
 		);
 	}
-	static public function imod<T>(self:PExpr<T>,fn:Int->PExpr<T>->Upshot<Option<PExpr<T>>,PmlFailure>){
+	static public function imod<T,E>(self:PExpr<T>,fn:Int->PExpr<T>->Upshot<Option<PExpr<T>>,E>){
 		var i = 0;
 		return self.mod(
 			(p) -> {
@@ -254,7 +251,7 @@ class PExprLift {
 					case [CoField(key,idx),PGroup(Cons(PLabel(x),Cons(y,Nil)))] if (self.is_assoc()) :
 						if(idx == null || (int == idx && idx != null)){
 							if(key == x){
-								result = Some(e);
+								result = Some(y);
 								__.accept(None);
 							}else{
 								__.accept(None);
@@ -303,9 +300,25 @@ class PExprLift {
 				);
 			}
 		).map(
-			opt -> opt.fold(
+			opt -> (opt).fold(
 				x	 -> x,
-				() -> self
+				() -> self.clear()
+			)
+		);
+	}
+	static public function ifilter<T,E>(self:PExpr<T>,fn:Int -> PExpr<T> -> Bool):Upshot<PExpr<T>,E>{
+		return self.imod(
+			(i,e) -> {
+				trace("())))))))))))))))))))))))))))))))))");
+				return __.tracer()(fn(i,e).if_else(
+					() -> __.accept(__.option(e)),
+					() -> __.accept(__.option())
+				));
+			}
+		).map(
+			opt -> __.tracer()(opt).fold(
+				x	 -> x,
+				() -> self.clear()
 			)
 		);
 	}
@@ -315,7 +328,10 @@ class PExprLift {
 			default 													: None;
 		}
 	}
-	static public function as_assoc<T>(self:Cluster<PExpr<T>>):Upshot<PExpr<T>,PmlFailure>{
+	static public function assoc_make<T>(l:PExpr<T>,r:PExpr<T>):PExpr<T>{
+		return PGroup(Cons(l,Cons(r,Nil)));
+	}
+	static public function as_assoc_cluster<T>(self:Cluster<PExpr<T>>):Upshot<Cluster<Tup2<PExpr<T>,PExpr<T>>>,PmlFailure>{
 		return Upshot.bind_fold(
 			self,
 			(next:PExpr<T>,memo:Cluster<Tup2<PExpr<T>,PExpr<T>>>) -> {
@@ -325,7 +341,10 @@ class PExprLift {
 				);
 			},
 			[].imm()
-		).map(PAssoc);
+		);	
+	}
+	static public function as_assoc<T>(self:Cluster<PExpr<T>>):Upshot<PExpr<T>,PmlFailure>{
+		return as_assoc_cluster(self).map(PAssoc);
 	}
 	static public function assoc_label<T>(self:PExpr<T>){
 		return as_tuple2(self).flat_map(
@@ -372,6 +391,15 @@ class PExprLift {
 				}
 			}
 		);
+	}
+	static public function clear<T>(self:PExpr<T>):PExpr<T>{
+		return switch(self){
+			case PAssoc(_) 	: PAssoc([]);
+			case PArray(_) 	: PArray([]);
+			case PGroup(_) 	: PGroup(LinkedList.unit());
+			case PSet(_) 	 	: PSet([]);
+			default 				: self;
+		}
 	}
 }
 /**
