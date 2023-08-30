@@ -291,6 +291,38 @@ class PExprLift {
 			true
 		);
 	}
+	/**
+	 * As with `fold_layer` but uses `Upshot` as an output in the lambda.
+	 * @param self 
+	 * @param fn 
+	 * @return Upshot<PExpr<T>,PmlFailure>
+	 */
+	static public function fold_bind_layer<T,Z>(self:PExpr<T>,fn:PExpr<T> -> Upshot<Z,PmlFailure> -> Upshot<Z,PmlFailure>,z:Upshot<Z,PmlFailure>):Upshot<Z,PmlFailure>{
+		return self.mod(
+			(x) -> {
+				z = fn(x,z);
+				return __.accept(None);
+			}
+		).flat_map(_ -> z);
+	}
+	static public function any_bind_layer<T>(self:PExpr<T>,fn:PExpr<T> -> Upshot<Bool,PmlFailure>):Upshot<Bool,PmlFailure>{
+		return fold_bind_layer(
+			self,
+			(n,m) -> m.flat_map(
+				m -> fn(n).map(n -> m || n)
+			),
+			__.accept(false)
+		);
+	}
+	static public function all_bind_layer<T>(self:PExpr<T>,fn:PExpr<T> -> Upshot<Bool,PmlFailure>):Upshot<Bool,PmlFailure>{
+		return fold_bind_layer(
+			self,
+			(n,m) -> m.flat_map(
+				m -> fn(n).map(n -> m && n)
+			),
+			__.accept(false)
+		);
+	}
 	static public function filter<T>(self:PExpr<T>,fn:PExpr<T> -> Bool):Upshot<PExpr<T>,PmlFailure>{
 		return self.mod(
 			(e) -> {
