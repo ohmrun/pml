@@ -1,0 +1,11 @@
+(
+  (#first 1 2 3)
+  (second #test this)
+  {
+     (test #again (1 2)) (anotheras #thingle a) 
+  }
+  [#array first]
+  [array #array_rest false]
+  #{#set first_set}
+  #{set #second_set true}
+)

@@ -32,6 +32,7 @@ class Parser{
   public function val(){
     return stx.parse.Parsers.Choose(
       (t:Token) -> switch(t){
+        case PTData(AnSym(s)) if (s.startsWith("#"))  : Some(PApply(s.substr(1)));
         case PTData(AnSym(s)) if (s.startsWith(":"))  : Some(PLabel(s.substr(1)));
         case PTData(atm)                              : Some(PValue(atm));
         case null                                     : None;

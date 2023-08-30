@@ -182,6 +182,12 @@ class PExprLift {
 			default					: false;
 		}
 	}
+	static public function is_apply<T>(self:PExpr<T>) {
+		return switch (self) {
+			case PApply(_)	: true;
+			default					: false;
+		}
+	}
 	static public function is_leaf<T>(self:PExpr<T>) {
 		return switch (self) {
 			case PLabel(name) 		: true;

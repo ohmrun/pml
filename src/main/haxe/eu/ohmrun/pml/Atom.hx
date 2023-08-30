@@ -39,8 +39,8 @@ class AtomLift{
     return switch(self){
       case AnSym(s)           : Primate(PSprig(Textal(s)));
       case B(b)               : Primate(PBool(b));
-      case N(KLFloat(fl))     : Primate(PSprig(Byteal(NFloat(fl))));
-      case N(KLInt(fl))       : Primate(PSprig(Byteal(NInt(fl))));
+      case N(NFloat(fl))     : Primate(PSprig(Byteal(NFloat(fl))));
+      case N(NInt(fl))       : Primate(PSprig(Byteal(NInt(fl))));
       case Str(str)           : Primate(PSprig(Textal(str)));
       case Nul                : Unknown;
     }
@@ -49,9 +49,9 @@ class AtomLift{
     return switch(self){
       case PSprig(Textal(s))            : AnSym(s);
       case PBool(b)                     : B(b);
-      case PSprig(Byteal(NFloat(fl)))   : N(KLFloat(fl));
+      case PSprig(Byteal(NFloat(fl)))   : N(NFloat(fl));
       case PSprig(Byteal(NInt64(fl)))   : throw "64 bit unhandled here"; Nul;
-      case PSprig(Byteal(NInt(fl)))     : N(KLInt(fl));
+      case PSprig(Byteal(NInt(fl)))     : N(NInt(fl));
       case PNull                        : Nul;
     }
   }

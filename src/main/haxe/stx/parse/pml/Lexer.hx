@@ -24,11 +24,11 @@ class Lexer{
     return id("#").and(tl_bracket).then(_ -> PTHashLBracket);
   }
   static public function float(str:String){
-    return PTData(N(KLFloat(Std.parseFloat(str))));
+    return PTData(N(NFloat(Std.parseFloat(str))));
   }
   static public var k_float                 = SParse.float.then(float).tagged('float');
   static public function int(str:String){
-    return PTData(N(KLInt(Std.parseInt(str))));
+    return PTData(N(NInt(Std.parseInt(str))));
   }
   static public var k_int                   = SParse.integer.and_(id(".").not().lookahead()).then(int).tagged('int');
 
@@ -40,9 +40,12 @@ class Lexer{
       (x) -> PTData(Str(x))
     ).tagged('string');
 
-  static public var k_bool        = '^(true|false)\\s*$'.reg()
+  static public var k_bool        = "^(true|false)".reg()
     .then(
-      (x) -> PTData(B(__.tracer()(x) == "true" ? true : false))
+      (x) -> {
+        //trace('((($x)))');
+        return PTData(B(__.tracer()(x) == "true" ? true : false));
+      }
     ).tagged('bool');
       
   static public var k_atom        = "[^ {}\\[\\],\r\t\n\\(\\)]+".reg()
@@ -60,10 +63,10 @@ class Lexer{
         tr_square_bracket,
         tl_bracket,
         tr_bracket,
+        k_bool,
         k_int,
         k_float,
         k_string,
-        k_bool,
         ",".id().and_then(_ -> Parsers.Nothing()),
         k_atom,
       ].ors()

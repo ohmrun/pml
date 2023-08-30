@@ -11,8 +11,8 @@ class Num extends OrdCls<TNum>{
   public function comply(a:TNum,b:TNum):Ordered{
     trace('$a,$b');
     return switch([a,b]){
-      case [KLInt(iI),KLInt(iII)]       : Ord.Int().comply(iI,iII);
-      case [KLFloat(flI),KLFloat(flII)] : Ord.Float().comply(flI,flII);
+      case [NInt(iI),NInt(iII)]       : Ord.Int().comply(iI,iII);
+      case [NFloat(flI),NFloat(flII)] : Ord.Float().comply(flI,flII);
       default                           : NotLessThan;
     }
   }

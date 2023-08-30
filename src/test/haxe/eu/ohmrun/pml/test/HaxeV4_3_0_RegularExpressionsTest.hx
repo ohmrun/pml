@@ -8,7 +8,7 @@ class HaxeV4_3_0_RegularExpressionsTest extends TestCase{
     final s = '-0.1'.reader();
     final r = p.apply(s);
     for(x in r.toUpshot().fudge()){
-      same(x,PTData(N(KLFloat(-0.1))));
+      same(x,PTData(N(NFloat(-0.1))));
     }
   }
   public function test_bool(){

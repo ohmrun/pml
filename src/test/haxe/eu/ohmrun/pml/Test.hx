@@ -30,8 +30,8 @@ class Test{
           //log.level = BLANK;
 
     __.test().run([
-      new GeneralTraversalTest(),
-      //new LexerTest(),
+      //new GeneralTraversalTest(),
+      new LexerTest(),
       //new ExtractTest(),
       //new V2Test(),
       //new PTypeTest(),

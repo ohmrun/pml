@@ -1,8 +1,22 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+
+<a name="v0.11.0"></a>
+## [v0.11.0] - 2023-08-30
 ### Feat
+- Apply
+- error forwarding all/any methods
+
+
+<a name="v0.2.1"></a>
+## [v0.2.1] - 2023-06-28
+### Feat
+- slightly better API
 - general breadth-first algo
+
+### Fix
+- big woopsie with PExpr
 
 
 <a name="v0.10.0"></a>
@@ -63,7 +77,9 @@
 <a name="v0.2.0"></a>
 ## v0.2.0 - 2020-10-09
 
-[Unreleased]: https://github.com/ohmrun/pml/compare/v0.10.0...HEAD
+[Unreleased]: https://github.com/ohmrun/pml/compare/v0.11.0...HEAD
+[v0.11.0]: https://github.com/ohmrun/pml/compare/v0.2.1...v0.11.0
+[v0.2.1]: https://github.com/ohmrun/pml/compare/v0.10.0...v0.2.1
 [v0.10.0]: https://github.com/ohmrun/pml/compare/v0.9.0...v0.10.0
 [v0.9.0]: https://github.com/ohmrun/pml/compare/v0.8.0...v0.9.0
 [v0.8.0]: https://github.com/ohmrun/pml/compare/v0.7.0...v0.8.0

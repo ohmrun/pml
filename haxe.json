@@ -6,19 +6,20 @@
     "-cp"   : ["src/main/haxe"],
     "-L"    : ["tink_core","stx_pico","stx_nano","stx_fn","stx_fp","stx_log","stx_pkg","stx_assert","stx_parse","stx_ds","fletcher","stx_om"],
     "-resource" : [
-      "asset/test.pml@test",
-      "asset/test2@testw",
-      "asset/test-2.pml@test2",
-      "asset/haxe_cpl.pml@haxe_cpl",
-      "asset/haxe_cpl_order.pml@haxe_cpl_order",
-      "asset/v2.pml@v2",
-      "asset/traversal.edn@traversal"
+      "asset/test.edn@test",
+      "asset/test2.edn@testw",
+      "asset/test-2.edn@test2",
+      "asset/haxe_cpl.edn@haxe_cpl",
+      "asset/haxe_cpl_order.edn@haxe_cpl_order",
+      "asset/v2.edn@v2",
+      "asset/traversal.edn@traversal",
+      "asset/apply.edn@apply"
     ],
     "unit"  : {
       "--macro" : [
-        "include('eu.ohmrum.pml',true)",      
+        "include('eu.ohmrum.edn',true)",      
         "include('stx.assert',true)",
-        "include('stx.parse.pml',true)",
+        "include('stx.parse.edn',true)",
         "include('stx.g',true)"
       ],
       "interp" : {
@@ -45,6 +46,16 @@
       },
       "node" : {
         "--js" : "build/test/node/main.js"
+      }
+    },
+    "feat" : {
+      "-L"    : "stx_test", 
+      "-cp"   : "src/test/haxe",
+      "apply" : {
+        "-main" : "eu.ohmrun.pml.test.ApplyTest",
+        "interp" : {
+          "--interp" : true
+        }
       }
     }
   }

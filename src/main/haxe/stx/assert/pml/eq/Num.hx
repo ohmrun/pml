@@ -10,8 +10,8 @@ class Num extends EqCls<TNum>{
 
   public function comply(a:TNum,b:TNum):Equaled{
     return switch([a,b]){
-      case [KLInt(iI),KLInt(iII)]       : Eq.Int().comply(iI,iII);
-      case [KLFloat(flI),KLFloat(flII)] : Eq.Float().comply(flI,flII);
+      case [NInt(iI),NInt(iII)]       : Eq.Int().comply(iI,iII);
+      case [NFloat(flI),NFloat(flII)] : Eq.Float().comply(flI,flII);
       default                           : NotEqual;
     }
   }
