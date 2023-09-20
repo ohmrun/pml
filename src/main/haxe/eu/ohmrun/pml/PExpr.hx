@@ -84,7 +84,7 @@ class PExprLift {
 	// static public function fold<T>(self:PExpr<T>)
 	static public function get_string(self:PExpr<Atom>) {
 		return switch (self) {
-			case PLabel(name) | PApply(name) | PValue(AnSym(name)) | PValue(Str(name)):
+			case PLabel(name) | PApply(name) | PValue(Sym(name)) | PValue(Str(name)):
 				Some(name);
 			default:
 				None;

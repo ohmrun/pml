@@ -1,5 +1,6 @@
-package eu.ohmrun.halva;
+package eu.ohmrun.halva.term.pml;
 
-class Satisfies<T> implements eu.ohmrun.halva.core.Satisfies<PExpr<T>>{
+//implements eu.ohmrun.halva.core.Satisfies.SatisfiesApi<PExpr<T>>
+class Satisfies<T>{
   //public function 
 }

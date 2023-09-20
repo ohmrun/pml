@@ -2,9 +2,26 @@ package eu.ohmrun.pml;
 
 import stx.om.Spine;
 
+class AtomCtr extends Clazz{
+  public function Sym(s){
+    return AtomSum.Sym(s);
+  }
+  public function B(s){
+    return AtomSum.B(s);
+  }
+  public function N(s){
+    return AtomSum.N(s);
+  }
+  public function Str(s){
+    return AtomSum.Str(s);
+  }
+  public function Nul(){
+    return AtomSum.Nul;
+  }
+}
 @:using(eu.ohmrun.pml.Atom.AtomLift)
 enum AtomSum{//Data, Eq, Show, Typeable)
-  AnSym(s:Symbol);
+  Sym(s:Symbol);
   B(b:Bool);
   N(fl:Num);
   Str(str:String);
@@ -24,7 +41,7 @@ abstract Atom(AtomSum) from AtomSum to AtomSum{
 class AtomLift{
   static public function toString(self:Atom){
     return switch(self){
-      case AnSym(s)           : '${s}';
+      case Sym(s)           : '${s}';
       case B(b)               : Std.string(b);
       case N(fl)              : fl.toString();
       case Str(str)           : '$str';
@@ -37,17 +54,17 @@ class AtomLift{
    */
   static public function toPrimitive(self:Atom){
     return switch(self){
-      case AnSym(s)           : Primate(PSprig(Textal(s)));
+      case Sym(s)             : Primate(PSprig(Textal(s)));
       case B(b)               : Primate(PBool(b));
-      case N(NFloat(fl))     : Primate(PSprig(Byteal(NFloat(fl))));
-      case N(NInt(fl))       : Primate(PSprig(Byteal(NInt(fl))));
+      case N(NFloat(fl))      : Primate(PSprig(Byteal(NFloat(fl))));
+      case N(NInt(fl))        : Primate(PSprig(Byteal(NInt(fl))));
       case Str(str)           : Primate(PSprig(Textal(str)));
       case Nul                : Unknown;
     }
   }
   static public function fromPrimitive(self:Primitive){
     return switch(self){
-      case PSprig(Textal(s))            : AnSym(s);
+      case PSprig(Textal(s))            : Sym(s);
       case PBool(b)                     : B(b);
       case PSprig(Byteal(NFloat(fl)))   : N(NFloat(fl));
       case PSprig(Byteal(NInt64(fl)))   : throw "64 bit unhandled here"; Nul;

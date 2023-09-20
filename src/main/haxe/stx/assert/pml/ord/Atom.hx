@@ -11,7 +11,7 @@ class Atom extends OrdCls<TAtom>{
 
   public function comply(a:TAtom,b:TAtom):Ordered{
     return switch([a,b]){
-      case [AnSym(sI),AnSym(sII)]   : Ord.String().comply(sI,sII);
+      case [Sym(sI),Sym(sII)]   : Ord.String().comply(sI,sII);
       case [B(bI),B(bII)]           : Ord.Bool().comply(bI,bII);
       case [N(flI),N(flII)]         : Ord.pml().Num.comply(flI,flII);
       case [Str(strI),Str(strII)]   : Ord.String().comply(strI,strII);

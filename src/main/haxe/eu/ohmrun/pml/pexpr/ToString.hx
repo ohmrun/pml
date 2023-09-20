@@ -17,12 +17,18 @@ class ToString{
 					var items = array.map(rec.bind(_, ind + 1));
 					var length = items.lfold((n, m) -> m + n.length, ind);
 					var horizontal = length < opt.width ? true : false;
-					return horizontal.if_else(() -> '#{' + items.join(" ") + '}', () -> '{\n ${gap}' + items.join(' \n ${gap}') + '\n${gap}}');
+					return horizontal.if_else(
+						() -> '#{' + items.join(" ") + '}', 
+						() -> '#{\n ${gap}' + items.join(' \n ${gap}') + '\n${gap}}'
+					);
 				case PArray(array):
-					var items = array.map(rec.bind(_, ind + 1));
-					var length = items.lfold((n, m) -> m + n.length, ind);
-					var horizontal = length < opt.width ? true : false;
-					return horizontal.if_else(() -> '[' + items.join(" ") + ']', () -> '[\n ${gap}' + items.join(' \n ${gap}') + '\n${gap}]');
+					var items 			= array.map(rec.bind(_, ind + 1));
+					var length 			= items.lfold((n, m) -> m + n.length, ind);
+					var horizontal 	= length < opt.width ? true : false;
+					return horizontal.if_else(
+						() -> '[' + items.join(" ") + ']', 
+						() -> '[\n ${gap}' + items.join(' \n ${gap}') + '\n${gap}]'
+					);
 				case PApply(name): '#$name';
 				case PGroup(array):
 					var items = array.map(rec.bind(_, ind + 1));
@@ -46,10 +52,10 @@ class ToString{
 						}, 0);
 						if (widest > opt.width) {
 							final next = items.map(__.decouple((l:String, r:String) -> '${gap}$l\n${gap}$r')).lfold((n, m) -> '$m\n$n', "");
-							'${gap}\n{\n${next}\n';
+							'${gap}\n{\n${next}\n}';
 						} else {
 							final next = items.map(__.decouple((l, r) -> '${gap}$l $r')).lfold((n, m) -> '$m\n$n', "");
-							'${gap}\n{\n${next}\n';
+							'${gap}\n{\n${next}\n}';
 						}
 					} else {
 						var data = horizontal_test.lfold((n, m) -> m == "" ? n : '$m $n', "");

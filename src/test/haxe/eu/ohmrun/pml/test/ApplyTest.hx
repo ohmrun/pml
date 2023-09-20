@@ -23,12 +23,12 @@ class SomeApply extends Apply<Atom>{
     this.test_case = test_case;
     this.values    = [
       tuple2("first", PValue(N(NInt(1)))),
-      tuple2("test", PValue(AnSym("this"))),
+      tuple2("test", PValue(Sym("this"))),
       tuple2("again",PGroup(Cons(PValue(N(NInt(1))),Cons(PValue(N(NInt(2))),Nil)))),
-      tuple2("thingle",PValue(AnSym("a"))),
-      tuple2("array",PValue(AnSym("first"))),
+      tuple2("thingle",PValue(Sym("a"))),
+      tuple2("array",PValue(Sym("first"))),
       tuple2("array_rest",PValue(B(false))),
-      tuple2("set",PValue(AnSym("first_set"))),
+      tuple2("set",PValue(Sym("first_set"))),
       tuple2("second_set",PValue(B(true)))
     ];
   }

@@ -50,7 +50,7 @@ class Lexer{
       
   static public var k_atom        = "[^ {}\\[\\],\r\t\n\\(\\)]+".reg()
     .then(
-      (x:String) -> PTData(AnSym((x:Symbol)))
+      (x:String) -> PTData(Sym((x:Symbol)))
     ).tagged('atom');
     
   static public var main : Parser<String,Cluster<Token>> = (
