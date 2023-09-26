@@ -115,7 +115,7 @@ class Extract{
     Unpacks the items in head if its a PGroup, then uses the `nul` created by unpack to determine if a group has been fully parsed.
   **/
   static public function imbibe<T>(p:Parser<PExpr<Atom>,T>,name:String){
-    return unpack()._and(p).and_(nul(name));
+    return Parsers.AndR(unpack(),p).and_(nul(name));
   }
   static public function fmap<T>(f:PExpr<Atom> -> Option<T>,name:String):Parser<PExpr<Atom>,T>{
     return Parsers.Anon(

@@ -1,6 +1,12 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+### Feat
+- Apply
+
+### Fix
+- closing bracket in PAssoc in toString
+
 
 <a name="v0.11.0"></a>
 ## [v0.11.0] - 2023-08-30
