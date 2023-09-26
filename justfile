@@ -1,5 +1,5 @@
 default: test-interp
 unit:
-  hx build unit
+  hb build unit
 test-interp:
-  clear && hx build test/interp
+  clear && hb build test/interp
