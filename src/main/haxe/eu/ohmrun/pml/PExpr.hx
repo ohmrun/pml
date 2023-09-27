@@ -1,5 +1,17 @@
 package eu.ohmrun.pml;
 
+class PExprCtr extends Clazz{
+	public function Empty<T>():PExpr<T>{ return PEmpty; }
+
+	public function Label<T>(label):PExpr<T>{ return PLabel(label); }
+	public function Apply<T>(apply):PExpr<T>{ return PApply(apply); }
+	public function Value<T>(value):PExpr<T>{ return PValue(value); }
+
+	public function Group<T>(cls:Cluster<PExpr<T>>):PExpr<T>{ return PGroup(LinkedList.fromCluster(cls));}
+	public function Array<T>(cls:Cluster<PExpr<T>>):PExpr<T>{ return PArray(cls);}
+	public function Set<T>(cls:Cluster<PExpr<T>>):PExpr<T>{ return PSet(cls);}
+	public function Assoc<T>(cls:Map<PExpr<T>,PExpr<T>>):PExpr<T>{ return PAssoc(cls.toIterKV().toCluster().map(x -> tuple2(x.key,x.value)));}
+}
 @:using(eu.ohmrun.pml.pexpr.ToString)
 @:using(eu.ohmrun.pml.pexpr.Mod)
 @:using(eu.ohmrun.pml.pexpr.Signature)
