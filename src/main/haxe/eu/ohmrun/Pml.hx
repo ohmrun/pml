@@ -32,6 +32,7 @@ typedef PExprSum<T>     = eu.ohmrun.pml.PExpr.PExprSum<T>;
 typedef PExpr<T>        = eu.ohmrun.pml.PExpr<T>;
 typedef PChainKindSum   = eu.ohmrun.pml.PChainKind.PChainKindSum;
 typedef PChainKind      = eu.ohmrun.pml.PChainKind;
+typedef PItemKindCtr    = eu.ohmrun.pml.PItemKind.PItemKindCtr;
 typedef PItemKindSum    = eu.ohmrun.pml.PItemKind.PItemKindSum;
 typedef PItemKind       = eu.ohmrun.pml.PItemKind;
 typedef PSignatureSum   = eu.ohmrun.pml.PSignature.PSignatureSum;

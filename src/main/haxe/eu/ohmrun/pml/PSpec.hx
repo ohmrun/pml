@@ -2,10 +2,10 @@ package eu.ohmrun.pml;
 
 enum PSpecSum<T>{
   PSig(sig:PSignature);
-  PSeq(l:PSpec,r:PSpec);
-  PAlt(l:PSpec,r:PSpec);
-  POpt(spec:PSpec);
-  PNot(spec:PSpec);
+  PSeq(l:PSpec<T>,r:PSpec<T>);
+  PAlt(l:PSpec<T>,r:PSpec<T>);
+  POpt(spec:PSpec<T>);
+  PNot(spec:PSpec<T>);
   PAny;
   PItm;//PLabel,PApply,PValue
   PLst;//PGroup,PArray,PSet

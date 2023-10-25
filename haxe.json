@@ -17,9 +17,9 @@
     ],
     "unit"  : {
       "--macro" : [
-        "include('eu.ohmrum.edn',true)",      
+        "include('eu.ohmrum.pml',true)",      
         "include('stx.assert',true)",
-        "include('stx.parse.edn',true)",
+        "include('stx.parse.Pml',true)",
         "include('stx.g',true)"
       ],
       "interp" : {
